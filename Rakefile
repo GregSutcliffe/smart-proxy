@@ -11,6 +11,11 @@ if (RUBY_VERSION.split('.').map{|s|s.to_i} <=> [1,9,0]) > 0 then
   PLATFORM = RUBY_PLATFORM
 end
 
+# Test for 1.9
+if (RUBY_VERSION.split('.').map{|s|s.to_i} <=> [1,9,0]) > 0 then
+  PLATFORM = RUBY_PLATFORM
+end
+
 desc 'Default: run unit tests.'
 task :default => :test
 
