@@ -68,6 +68,9 @@
 :puppet: false
 :puppet_conf: /etc/puppet/puppet.conf
 
+# enable MCollective integration
+:mcollective: false
+
 # enable BMC management  (Bare metal power and bios controls)
 # Available providers:
 # - freeipmi / ipmitool - requires the appropriate package installed, and the rubyipmi gem
