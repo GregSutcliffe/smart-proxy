@@ -1,17 +1,19 @@
+require 'proxy/util'
+
 module Proxy::Puppet
   extend Proxy::Log
   extend Proxy::Util
   require 'proxy/puppet/puppet_class'
   require 'proxy/puppet/environment'
-  require 'proxy/puppet/runner'
 
-  class << self
-    def run *nodes
-      if SETTINGS.mcollective
-        Proxy::Puppet::Mcollective.run(nodes)
-      else
-        Proxy::Puppet::PuppetRun.run(nodes)
-      end
+  class Runner
+    include Proxy::Util
+
+    def initialize(opts)
+      @nodes = opts[:nodes]
     end
+
+    protected
+    attr_reader :nodes
   end
 end
