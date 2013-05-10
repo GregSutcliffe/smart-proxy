@@ -1,5 +1,5 @@
 class SmartProxy
-  def setup(opts = {})
+  def pp_setup(opts = {})
     raise "Smart Proxy is not configured to support Puppet runs" unless SETTINGS.puppet
     case SETTINGS.puppet_provider
     when "puppetrun"
@@ -19,7 +19,7 @@ class SmartProxy
     nodes = params[:nodes]
     begin
       log_halt 400, "Failed puppet run: No nodes defined" unless nodes
-      log_halt 500, "Failed puppet run: Check Log files" unless setup(:nodes => nodes).run
+      log_halt 500, "Failed puppet run: Check Log files" unless pp_setup(:nodes => nodes).run
     rescue => e
       log_halt 500, "Failed puppet run: #{e}"
     end

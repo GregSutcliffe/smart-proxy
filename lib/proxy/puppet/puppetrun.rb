@@ -17,7 +17,7 @@ module Proxy::Puppet
       # Append kick to the puppet command if we are not using the old puppetca command
       puppetrun << " kick" unless puppetrun.include?('puppetrun')
 
-      command = %x[#{sudo} #{puppetrun} --host #{nodes.join(" --host ")}]
+      command = %x[#{sudo} #{puppetrun} --host #{nodes.split(' ').join(" --host ")}]
       unless command =~ /finished with exit code 0/
         logger.warn command
         return false
