@@ -1,3 +1,8 @@
+$LOAD_PATH.unshift File.expand_path("../", __FILE__)
+
+require 'dns/dns_module_config'
+require 'dns/dns_api'
+
 module Proxy::DNS
   class Error < RuntimeError; end
   class Collision < RuntimeError; end
@@ -13,6 +18,5 @@ module Proxy::DNS
 
       raise("Must define FQDN or Value") if @fqdn.nil? and @value.nil?
     end
-
   end
 end

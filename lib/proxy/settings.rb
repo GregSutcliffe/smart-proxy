@@ -3,11 +3,11 @@ require "yaml"
 require "ostruct"
 require "pathname"
 
-require 'proxy/dns/default_dns_settings'
-require 'proxy/puppet/default_puppet_settings'
+require 'dns/dns/default_dns_settings'
+#require 'proxy/puppet/default_puppet_settings'
 
 class Settings < OpenStruct
-  DEFAULTS = [Proxy::DNS::DefaultSettings::DEFAULTS, Proxy::Puppet::DefaultSettings::DEFAULTS].inject({}) do |all, current|
+  DEFAULTS = [Proxy::DNS::DefaultSettings::DEFAULTS].inject({}) do |all, current| #, Proxy::Puppet::DefaultSettings::DEFAULTS
     all.merge!(current)
   end
 

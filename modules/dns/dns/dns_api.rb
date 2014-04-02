@@ -1,21 +1,23 @@
-class SmartProxy
+class Proxy::DnsApi < ::Sinatra::Base
+  include ::Proxy::Log
+
   def dns_setup(opts)
     raise "Smart Proxy is not configured to support DNS" unless SETTINGS.dns
     case SETTINGS.dns_provider
     when "dnscmd"
-      require 'proxy/dns/dnscmd'
+      require 'dns/providers/dnscmd'
       @server = Proxy::DNS::Dnscmd.new(opts.merge(
         :server => SETTINGS.dns_server,
         :ttl => SETTINGS.dns_ttl
       ))
     when "nsupdate"
-      require 'proxy/dns/nsupdate'
+      require 'dns/providers/nsupdate'
       @server = Proxy::DNS::Nsupdate.new(opts.merge(
         :server => SETTINGS.dns_server,
         :ttl => SETTINGS.dns_ttl
       ))
     when "nsupdate_gss"
-      require 'proxy/dns/nsupdate_gss'
+      require 'dns/providers/nsupdate_gss'
       @server = Proxy::DNS::NsupdateGSS.new(opts.merge(
         :server => SETTINGS.dns_server,
         :ttl => SETTINGS.dns_ttl,
@@ -23,7 +25,7 @@ class SmartProxy
         :tsig_principal => SETTINGS.dns_tsig_principal
       ))
     when "virsh"
-      require 'proxy/dns/virsh'
+      require 'dns/providers/virsh'
       @server = Proxy::DNS::Virsh.new(opts.merge(
         :virsh_network => SETTINGS.virsh_network
       ))
@@ -34,7 +36,7 @@ class SmartProxy
     log_halt 400, e
   end
 
-  post "/dns/" do
+  post "/" do
     fqdn  = params[:fqdn]
     value = params[:value]
     type  = params[:type]
@@ -48,7 +50,7 @@ class SmartProxy
     end
   end
 
-  delete "/dns/:value" do
+  delete "/:value" do
     case params[:value]
     when /\.(in-addr|ip6)\.arpa$/
       type = "PTR"
