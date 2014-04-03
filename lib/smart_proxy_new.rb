@@ -11,6 +11,7 @@ module Proxy
   require 'proxy/log'
   require 'proxy/util'
   require 'proxy/version'
+  require 'proxy/helpers'
 
   ::SETTINGS = Settings.load_from_file
 
