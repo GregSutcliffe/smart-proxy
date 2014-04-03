@@ -1,4 +1,3 @@
-require "proxy/dns"
 require "proxy/virsh"
 
 module Proxy::DNS

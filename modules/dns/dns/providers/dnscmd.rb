@@ -1,12 +1,9 @@
-require "proxy/dns"
 require 'resolv'
 require 'checks'
-require 'rubygems' if USE_GEMS
 require 'win32/open3'
 
 module Proxy::DNS
   class Dnscmd < Record
-
     include Proxy::Log
     include Proxy::Util
     attr_reader :resolver
