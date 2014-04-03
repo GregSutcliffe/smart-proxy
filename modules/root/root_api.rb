@@ -1,4 +1,8 @@
+require 'proxy/helpers'
+
 class Proxy::RootApi < Sinatra::Base
+  include ::Proxy::Helpers
+
   get "/features" do
     begin
       @features = Proxy.features.sort

@@ -1,5 +1,8 @@
+require 'proxy/helpers'
+
 class Proxy::DnsApi < ::Sinatra::Base
   include ::Proxy::Log
+  include ::Proxy::Helpers
 
   def dns_setup(opts)
     raise "Smart Proxy is not configured to support DNS" unless SETTINGS.dns

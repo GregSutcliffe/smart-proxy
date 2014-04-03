@@ -1,5 +1,4 @@
-class SmartProxy < Sinatra::Base
-
+module Proxy::Helpers
   helpers do
     # Accepts a html error code and a message, which is then returned to the caller after adding to the proxy log
     # OR  a block which is executed and its errors handled in a similar way.
