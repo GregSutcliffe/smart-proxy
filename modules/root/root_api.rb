@@ -1,6 +1,5 @@
-require 'proxy/helpers'
-
 class Proxy::RootApi < Sinatra::Base
+  require 'proxy/helpers'
   include ::Proxy::Helpers
 
   get "/features" do

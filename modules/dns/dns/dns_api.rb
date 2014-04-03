@@ -1,6 +1,5 @@
-require 'proxy/helpers'
-
 class Proxy::DnsApi < ::Sinatra::Base
+  require 'proxy/helpers'
   include ::Proxy::Log
   include ::Proxy::Helpers
 
