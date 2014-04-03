@@ -22,7 +22,7 @@ module Proxy
   ::Sinatra::Base.set :env, :production
 #  ::Sinatra::Base.use ::Rack::CommonLogger, logger
 
-  require 'root/root_api'
+  require 'root/root'
   require 'dns/dns'
 
   def self.version
