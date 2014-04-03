@@ -1,5 +1,5 @@
-class SmartProxy < Sinatra::Base
-  get "/features" do
+class Proxy::RootApi < Sinatra::Base
+  get "features" do
     begin
       @features = Proxy.features.sort
       if request.accept? 'application/json'
@@ -13,12 +13,11 @@ class SmartProxy < Sinatra::Base
     end
   end
 
-  get "/version" do
+  get "version" do
     begin
-      Proxy.version.to_json
+      {:version => Proxy::VERSION}.to_json
     rescue => e
       log_halt 400, e
     end
   end
-
 end

@@ -22,9 +22,15 @@ module Proxy
   ::Sinatra::Base.set :env, :production
 #  ::Sinatra::Base.use ::Rack::CommonLogger, logger
 
+  require 'root/root_api'
   require 'dns/dns'
 
   def self.version
     {:version => VERSION}
+  end
+
+  MODULES = %w{dns dhcp tftp puppetca puppet bmc chefproxy}
+  def self.features
+    MODULES.collect{|mod| mod if SETTINGS.send mod}.compact
   end
 end
