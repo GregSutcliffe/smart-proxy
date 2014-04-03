@@ -1,5 +1,5 @@
 class Proxy::RootApi < Sinatra::Base
-  get "features" do
+  get "/features" do
     begin
       @features = Proxy.features.sort
       if request.accept? 'application/json'
@@ -13,7 +13,7 @@ class Proxy::RootApi < Sinatra::Base
     end
   end
 
-  get "version" do
+  get "/version" do
     begin
       {:version => Proxy::VERSION}.to_json
     rescue => e

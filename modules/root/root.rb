@@ -1,2 +1,2 @@
-require 'root_module_config'
-require 'root_api'
+require 'root/root_module_config'
+require 'root/root_api'
