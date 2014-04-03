@@ -1,7 +1,7 @@
 require 'checks'
 require 'ipaddr'
-require 'proxy/dhcp/monkey_patches' unless IPAddr.new.respond_to?('to_range')
-require 'proxy/dhcp/monkey_patch_subnet' unless Array.new.respond_to?('rotate')
+require 'dhcp/monkey_patches' unless IPAddr.new.respond_to?('to_range')
+require 'monkey_patch_subnet' unless Array.new.respond_to?('rotate')
 require 'proxy/validations'
 require 'socket'
 require 'timeout'

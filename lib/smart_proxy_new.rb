@@ -25,6 +25,7 @@ module Proxy
 
   require 'root/root'
   require 'dns/dns'
+  require 'dhcp/dhcp'
 
   def self.version
     {:version => VERSION}

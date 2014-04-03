@@ -1,8 +1,14 @@
+$LOAD_PATH.unshift File.expand_path("../", __FILE__)
+
+require 'dhcp/dhcp_module_config'
+require 'dhcp/dhcp_api'
+
+require "dhcp/record"
+require "dhcp/record/lease"
+require "dhcp/record/reservation"
+require "dhcp/server"
+
 module Proxy::DHCP
-  require "proxy/dhcp/record"
-  require "proxy/dhcp/record/lease"
-  require "proxy/dhcp/record/reservation"
-  require "proxy/dhcp/server"
   Standard = {
               :hostname              => {:code => 12, :kind => "String"    }, # The host's name
               :PXEClient             => {:code => 60, :kind => "String"    }, # Needs to be empty for foreman to function

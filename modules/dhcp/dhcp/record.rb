@@ -1,4 +1,4 @@
-require "proxy/dhcp/subnet"
+require "dhcp/subnet"
 require "proxy/validations"
 
 module Proxy::DHCP

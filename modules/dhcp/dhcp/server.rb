@@ -1,5 +1,5 @@
-require "proxy/dhcp/subnet"
-require "proxy/dhcp/record"
+require "dhcp/subnet"
+require "dhcp/record"
 
 module Proxy::DHCP
   # represents a DHCP Server
