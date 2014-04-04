@@ -18,8 +18,9 @@
 :daemon: true
 :daemon_pid: /var/run/foreman-proxy/foreman-proxy.pid
 
-# Port used by the proxy
-:port: 8443
+# ports used by the proxy
+:http_port: 8000
+:https_port: 8443
 
 # Enable TFTP management
 :tftp: false
