@@ -1,5 +1,7 @@
-class SmartProxy < Sinatra::Base
-  get "/facts" do
+class Proxy::FactsApi < Sinatra::Base
+  helpers ::Proxy::Helpers
+
+  get "/" do
     begin
       content_type :json
       Facter.clear
@@ -9,7 +11,7 @@ class SmartProxy < Sinatra::Base
     end
   end
 
-  get "/facts/:fact" do
+  get "/:fact" do
     begin
       content_type :json
       Facter.clear

@@ -24,6 +24,7 @@ module Proxy
 #  ::Sinatra::Base.use ::Rack::CommonLogger, logger
 
   require 'root/root'
+  require 'facts/facts'
   require 'dns/dns'
   require 'dhcp/dhcp'
   require 'puppetca/puppetca'
@@ -64,25 +65,9 @@ module Proxy
         :pid => SETTINGS.daemon ? pid_path : nil)
     end
 
-    def http_app_2
-      return nil
-      
-      app = Rack::Builder.new do
-        configs = ObjectSpace.each_object(::Class).select {|klass| klass < ::Proxy::ModuleConfig}
-        configs.each {|c| instance_eval(File.read(c.http_rackup_path))}
-      end
-
-      Rack::Server.new(
-        :app => app, 
-        :server => :webrick,
-        :Port => SETTINGS.https_port,
-        :daemonize => false,
-        :pid => SETTINGS.daemon ? pid_path : nil)
-    end
-
     def https_app
       unless SETTINGS.ssl_private_key and SETTINGS.ssl_certificate and SETTINGS.ssl_ca_file
-        logger.info "Missing SSL setup, working in clear text mode !"
+        logger.info "Missing SSL setup, will not be listening on https port"
       else
         begin
           app = Rack::Builder.new do
