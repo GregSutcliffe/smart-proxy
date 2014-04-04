@@ -82,7 +82,7 @@ module Proxy
 
     def https_app
       unless SETTINGS.ssl_private_key and SETTINGS.ssl_certificate and SETTINGS.ssl_ca_file
-        logger.warn "WARNING: Missing SSL setup, working in clear text mode !\n"
+        logger.info "Missing SSL setup, working in clear text mode !"
       else
         begin
           app = Rack::Builder.new do
@@ -102,7 +102,7 @@ module Proxy
             :daemonize => false,
             :pid => nil)
         rescue => e
-          logger.warn "Unable to access the SSL keys. Are the values correct in settings.yml and do permissions allow reading?: #{e}"
+          logger.error "Unable to access the SSL keys. Are the values correct in settings.yml and do permissions allow reading?: #{e}"
         end
       end
 
