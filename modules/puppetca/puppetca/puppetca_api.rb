@@ -1,59 +1,63 @@
-class SmartProxy
-  get "/puppet/ca" do
+class Proxy::PuppetCaApi < ::Sinatra::Base
+  include ::Proxy::Log
+  helpers ::Proxy::Helpers
+
+  get "/" do
     content_type :json
     begin
-      Proxy::PuppetCA.list.to_json
+      Proxy::PuppetCa.list.to_json
     rescue => e
       log_halt 406, "Failed to list certificates: #{e}"
     end
   end
 
-  get "/puppet/ca/autosign" do
+  get "/autosign" do
     content_type :json
     begin
-      Proxy::PuppetCA.autosign_list.to_json
+      Proxy::PuppetCa.autosign_list.to_json
     rescue => e
       log_halt 406, "Failed to list autosign entries: #{e}"
     end
   end
 
-  post "/puppet/ca/autosign/:certname" do
+  post "/autosign/:certname" do
     content_type :json
     certname = params[:certname]
     begin
-      Proxy::PuppetCA.autosign(certname)
+      Proxy::PuppetCa.autosign(certname)
     rescue => e
       log_halt 406, "Failed to enable autosign for #{certname}: #{e}"
     end
   end
 
-  delete "/puppet/ca/autosign/:certname" do
+  delete "/autosign/:certname" do
     content_type :json
     certname = params[:certname]
     begin
-      Proxy::PuppetCA.disable(certname)
-    rescue Proxy::PuppetCA::NotPresent => e
+      Proxy::PuppetCa.disable(certname)
+    rescue Proxy::PuppetCa::NotPresent => e
       log_halt 404, "#{e}"
     rescue => e
       log_halt 406, "Failed to remove autosign for #{certname}: #{e}"
     end
   end
 
-  post "/puppet/ca/:certname" do
+  post "/:certname" do
     content_type :json
     certname = params[:certname]
     begin
-      Proxy::PuppetCA.sign(certname)
+      Proxy::PuppetCa.sign(certname)
     rescue => e
       log_halt 406, "Failed to sign certificate(s) for #{certname}: #{e}"
     end
   end
-  delete "/puppet/ca/:certname" do
+
+  delete "/:certname" do
     begin
       content_type :json
       certname = params[:certname]
-      Proxy::PuppetCA.clean(certname)
-    rescue Proxy::PuppetCA::NotPresent => e
+      Proxy::PuppetCa.clean(certname)
+    rescue Proxy::PuppetCa::NotPresent => e
       log_halt 404, "#{e}"
     rescue => e
       log_halt 406, "Failed to remove certificate(s) for #{certname}: #{e}"
