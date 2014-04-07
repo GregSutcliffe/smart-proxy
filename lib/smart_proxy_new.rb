@@ -1,9 +1,10 @@
 APP_ROOT = "#{File.dirname(__FILE__)}/.."
 
 require 'sinatra'
-require "fileutils"
-require "pathname"
-require "checks"
+require 'fileutils'
+require 'pathname'
+require 'checks'
+require 'webrick/https'
 
 module Proxy
   require 'proxy/settings'
@@ -108,7 +109,7 @@ module Proxy
         https_app.shutdown unless https_app.nil?
       end
 
-      t1.join
+      t2.join
 
       Process.daemon if SETTINGS.daemon
     end
