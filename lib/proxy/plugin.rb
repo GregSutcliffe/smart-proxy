@@ -47,28 +47,30 @@ end
 #  requires :foreman_proxy, ">= 1.5.develop"
 #  requires :another_plugin, "~> 1.3.0"
 #  plugin :example, "1.2.3"
+#  before_registration { call_this }
+#  after_registration { call_that }
 # end
 #
 class ::Proxy::Plugin
   include ::Proxy::Log
 
   class << self
-    attr_reader :plugin_name, :version
+    attr_reader :plugin_name, :version, :before_registration_blk, :after_registration_blk, :get_http_rackup_path, :get_https_rackup_path
 
-    def http_rackup_path(path)
-      @http_rackup_path = path
+    def before_registration(&blk)
+      @before_registration_blk = blk
     end
 
-    def get_http_rackup_path
-      @http_rackup_path
+    def after_registration(&blk)
+      @after_registration_blk = blk
+    end
+
+    def http_rackup_path(path)
+      @get_http_rackup_path = path
     end
 
     def https_rackup_path(path)
-      @https_rackup_path = path
-    end
-
-    def get_https_rackup_path
-      @https_rackup_path
+      @get_https_rackup_path = path
     end
 
     def dependencies
@@ -113,9 +115,11 @@ class ::Proxy::Plugin
 
   def before_registration
     validate_dependencies!(self.class.dependencies)
+    self.class.before_registration_blk.call if self.class.before_registration_blk
   end
 
   def after_registration
+    self.class.after_registration_blk.call if self.class.after_registration_blk
   end
 
   def validate_dependencies!(dependencies)
