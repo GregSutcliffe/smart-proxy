@@ -1,2 +1,0 @@
-class Proxy::ModuleConfig
-end

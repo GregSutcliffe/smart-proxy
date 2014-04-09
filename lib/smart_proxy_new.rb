@@ -8,11 +8,11 @@ require 'webrick/https'
 
 module Proxy
   require 'proxy/settings'
-  require 'proxy/module_config'
   require 'proxy/log'
   require 'proxy/util'
   require 'proxy/version'
   require 'proxy/helpers'
+  require 'proxy/plugin'
 
   ::SETTINGS = Settings.load_from_file
 
@@ -54,8 +54,7 @@ module Proxy
 
     def http_app
       app = Rack::Builder.new do
-        configs = ObjectSpace.each_object(::Class).select {|klass| klass < ::Proxy::ModuleConfig}
-        configs.each {|c| instance_eval(File.read(c.http_rackup_path))}
+        ::Proxy::Plugins.registered_plugins.each {|p| instance_eval(p.http_rackup)}
       end
 
       Rack::Server.new(
@@ -72,8 +71,7 @@ module Proxy
       else
         begin
           app = Rack::Builder.new do
-            configs = ObjectSpace.each_object(::Class).select {|klass| klass < ::Proxy::ModuleConfig}
-            configs.each {|c| instance_eval(File.read(c.https_rackup_path))}
+            ::Proxy::Plugins.registered_plugins.each {|p| instance_eval(p.https_rackup)}
           end
 
           Rack::Server.new(
@@ -89,14 +87,17 @@ module Proxy
             :pid => nil)
         rescue => e
           logger.error "Unable to access the SSL keys. Are the values correct in settings.yml and do permissions allow reading?: #{e}"
+          nil
         end
       end
 
     end
 
     def self.launch
-      launcher = Launcher.new
+      ::Proxy::Plugins.register_loaded_plugins
 
+      launcher = Launcher.new
+      
       launcher.create_pid_dir
       http_app = launcher.http_app
       https_app = launcher.https_app

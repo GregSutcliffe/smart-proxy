@@ -1,6 +1,6 @@
 $LOAD_PATH.unshift File.expand_path("../", __FILE__)
 
-require 'puppetca/puppetca_module_config'
+require 'puppetca/puppetca_plugin'
 require 'puppetca/puppetca_api'
 
 require 'openssl'
