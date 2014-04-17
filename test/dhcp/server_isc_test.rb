@@ -1,10 +1,8 @@
 require 'test_helper'
-require 'helpers'
 require 'json'
-require 'proxy/dhcp'
-require 'proxy/dhcp/server'
-require 'proxy/dhcp/server/isc'
-require 'dhcp_api'
+require 'smart_proxy_new'
+require 'dhcp/providers/server/isc'
+require 'dhcp/dhcp_api'
 
 ENV['RACK_ENV'] = 'test'
 
@@ -12,7 +10,7 @@ class ServerIscTest < Test::Unit::TestCase
   include Rack::Test::Methods
 
   def app
-    SmartProxy.new
+    Proxy::DhcpApi.new
   end
 
   def sparc_attrs
@@ -39,12 +37,12 @@ class ServerIscTest < Test::Unit::TestCase
     sub=Proxy::DHCP::Subnet.new(s,'192.168.122.0','255.255.255.0')
     Proxy::DHCP::Server::ISC.any_instance.stubs(:find_subnet).returns(sub)
     Proxy::DHCP::Server::ISC.any_instance.stubs(:omcmd)
-    post '/dhcp/192.168.122.10', sparc_attrs
+    post '/192.168.122.10', sparc_attrs
     assert last_response.ok?, 'Last response was not ok'
   end
 
   def test_sparc_host_quirks
-    dhcp = Proxy::DHCP::Server::ISC.new(:name => '192.168.122.1', :config => './test/dhcp.conf', :leases => './test/dhcp.leases')
+    dhcp = Proxy::DHCP::Server::ISC.new(:name => '192.168.122.1', :config => './test/dhcp/dhcp.conf', :leases => './test/dhcp/dhcp.leases')
     assert_equal [], dhcp.send(:solaris_options_statements, {})
 
     assert_equal [
@@ -61,7 +59,7 @@ class ServerIscTest < Test::Unit::TestCase
   end
 
   def test_ztp_quirks
-    dhcp = Proxy::DHCP::Server::ISC.new(:name => '192.168.122.1', :config => './test/dhcp.conf', :leases => './test/dhcp.leases')
+    dhcp = Proxy::DHCP::Server::ISC.new(:name => '192.168.122.1', :config => './test/dhcp/dhcp.conf', :leases => './test/dhcp/dhcp.leases')
     assert_equal [], dhcp.send(:ztp_options_statements, {})
     assert_equal [], dhcp.send(:ztp_options_statements, {:filename => 'foo.cfg'})
 
