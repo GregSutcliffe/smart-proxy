@@ -1,4 +1,5 @@
 require 'test_helper'
+require 'smart_proxy_new'
 
 class ProxyUtilTest < Test::Unit::TestCase
   class UtilClass; extend Proxy::Util; end
@@ -22,6 +23,7 @@ class ProxyUtilTest < Test::Unit::TestCase
     assert_equal t.join, RUBY_VERSION =~ /1\.8\.\d+/  ? 0 : nil
   end
 
+  # TODO: FIX ME: what is being tested here?
   def test_commandtask_with_wget_invalidport_exec
     t = Proxy::Util::CommandTask.new("wget --no-check-certificate -c http://127.0.0.2 -O /dev/null")
 

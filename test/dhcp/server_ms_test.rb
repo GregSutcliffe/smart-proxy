@@ -1,5 +1,4 @@
 require 'test_helper'
-require 'smart_proxy_new'
 require 'dhcp/providers/server/native_ms'
 
 class DHCPServerMicrosoftTest < Test::Unit::TestCase

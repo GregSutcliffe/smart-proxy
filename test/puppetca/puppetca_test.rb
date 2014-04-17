@@ -2,6 +2,8 @@ require 'test_helper'
 require 'tempfile'
 require 'fileutils'
 
+require 'smart_proxy_new'
+require 'puppetca/puppetca'
 
 class ProxyTest < Test::Unit::TestCase
   ## Helper for autosign files.
@@ -10,7 +12,7 @@ class ProxyTest < Test::Unit::TestCase
     begin
       ## Setup
       FileUtils.cp './test/fixtures/autosign.conf', file.path
-      Proxy::PuppetCA.stubs(:autosign_file).returns(file.path)
+      Proxy::PuppetCa.stubs(:autosign_file).returns(file.path)
     rescue
       file.close
       file.unlink
@@ -20,8 +22,8 @@ class ProxyTest < Test::Unit::TestCase
   end
 
   def test_should_list_autosign_entries
-    Proxy::PuppetCA.stubs(:autosign_file).returns('./test/fixtures/autosign.conf')
-    assert_equal Proxy::PuppetCA.autosign_list, ['foo.example.com', '*.bar.example.com']
+    Proxy::PuppetCa.stubs(:autosign_file).returns('./test/fixtures/autosign.conf')
+    assert_equal Proxy::PuppetCa.autosign_list, ['foo.example.com', '*.bar.example.com']
   end
 
   def test_should_add_autosign_entry
@@ -29,7 +31,7 @@ class ProxyTest < Test::Unit::TestCase
     content = []
     begin
       ## Execute
-      Proxy::PuppetCA.autosign 'foobar.example.com'
+      Proxy::PuppetCa.autosign 'foobar.example.com'
       ## Read output
       content = file.read.split("\n")
     ensure
@@ -43,7 +45,7 @@ class ProxyTest < Test::Unit::TestCase
     file = create_temp_autosign_file
     content = ['foo.example.com']
     begin
-      Proxy::PuppetCA.disable 'foo.example.com'
+      Proxy::PuppetCa.disable 'foo.example.com'
       content = file.read.split("\n")
     ensure
       file.close
@@ -53,7 +55,7 @@ class ProxyTest < Test::Unit::TestCase
   end
 
   def test_should_have_a_logger
-    assert_respond_to Proxy::PuppetCA, :logger
+    assert_respond_to Proxy::PuppetCa, :logger
   end
 
   def test_which_should_return_a_binary_path
@@ -62,22 +64,22 @@ class ProxyTest < Test::Unit::TestCase
       FileTest.stubs(:file?).with("#{p}/ls").returns(r)
       FileTest.stubs(:executable?).with("#{p}/ls").returns(r)
     end
-    assert_equal '/bin/ls', Proxy::PuppetCA.which('ls')
+    assert_equal '/bin/ls', Proxy::PuppetCa.which('ls')
   end
 
   def test_should_clean_host
     #TODO
-    assert_respond_to Proxy::PuppetCA, :clean
+    assert_respond_to Proxy::PuppetCa, :clean
   end
 
   def test_should_disable_host
     #TODO
-    assert_respond_to Proxy::PuppetCA, :disable
+    assert_respond_to Proxy::PuppetCa, :disable
   end
 
   def test_should_sign_host
     #TODO
-    assert_respond_to Proxy::PuppetCA, :sign
+    assert_respond_to Proxy::PuppetCa, :sign
   end
 
 end

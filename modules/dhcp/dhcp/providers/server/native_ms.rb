@@ -1,5 +1,5 @@
 require 'checks'
-#require 'win32/open3'
+require 'win32/open3'
 
 module Proxy::DHCP
   # Represents Microsoft DHCP Server manipulated via the netsh command

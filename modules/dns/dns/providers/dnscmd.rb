@@ -1,5 +1,4 @@
 require 'resolv'
-require 'checks'
 require 'win32/open3'
 
 module Proxy::DNS
