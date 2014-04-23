@@ -46,6 +46,7 @@ end
 #  http_rackup_path File.expand_path("http_config.ru", File.expand_path("../", __FILE__)) # note no https rackup path, module will not be available over https
 #  requires :foreman_proxy, ">= 1.5.develop"
 #  requires :another_plugin, "~> 1.3.0"
+#  default_settings :first => 'first', :second => 'second'
 #  plugin :example, "1.2.3"
 #  before_registration { call_this }
 #  after_registration { call_that }
@@ -55,7 +56,7 @@ class ::Proxy::Plugin
   include ::Proxy::Log
 
   class << self
-    attr_reader :plugin_name, :version, :before_registration_blk, :after_registration_blk, :get_http_rackup_path, :get_https_rackup_path
+    attr_reader :plugin_name, :version, :before_registration_blk, :after_registration_blk, :get_http_rackup_path, :get_https_rackup_path, :plugin_default_settings
 
     def before_registration(&blk)
       @before_registration_blk = blk
@@ -79,6 +80,15 @@ class ::Proxy::Plugin
 
     def requires(plugin_name, version_spec)
       self.dependencies += [::Proxy::Dependency.new(plugin_name, version_spec)]
+    end
+
+    def default_settings(a_hash = {})
+      @plugin_default_settings ||= {}
+      @plugin_default_settings.merge!(a_hash)
+    end
+
+    def settings
+      Settings.load_from_file(:defaults => plugin_default_settings)
     end
   end
 

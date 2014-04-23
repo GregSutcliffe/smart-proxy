@@ -3,35 +3,35 @@ class Proxy::DnsApi < ::Sinatra::Base
   helpers ::Proxy::Helpers
 
   def dns_setup(opts)
-    raise "Smart Proxy is not configured to support DNS" unless SETTINGS.dns
-    case SETTINGS.dns_provider
+    raise "Smart Proxy is not configured to support DNS" unless Proxy::DnsPlugin.settings.dns
+    case Proxy::DnsPlugin.settings.dns_provider
     when "dnscmd"
       require 'dns/providers/dnscmd'
       @server = Proxy::DNS::Dnscmd.new(opts.merge(
-        :server => SETTINGS.dns_server,
-        :ttl => SETTINGS.dns_ttl
+        :server => Proxy::DnsPlugin.settings.dns_server,
+        :ttl => Proxy::DnsPlugin.settings.dns_ttl
       ))
     when "nsupdate"
       require 'dns/providers/nsupdate'
       @server = Proxy::DNS::Nsupdate.new(opts.merge(
-        :server => SETTINGS.dns_server,
-        :ttl => SETTINGS.dns_ttl
+        :server => Proxy::DnsPlugin.settings.dns_server,
+        :ttl => Proxy::DnsPlugin.settings.dns_ttl
       ))
     when "nsupdate_gss"
       require 'dns/providers/nsupdate_gss'
       @server = Proxy::DNS::NsupdateGSS.new(opts.merge(
-        :server => SETTINGS.dns_server,
-        :ttl => SETTINGS.dns_ttl,
-        :tsig_keytab => SETTINGS.dns_tsig_keytab,
-        :tsig_principal => SETTINGS.dns_tsig_principal
+        :server => Proxy::DnsPlugin.settings.dns_server,
+        :ttl => Proxy::DnsPlugin.settings.dns_ttl,
+        :tsig_keytab => Proxy::DnsPlugin.settings.dns_tsig_keytab,
+        :tsig_principal => Proxy::DnsPlugin.settings.dns_tsig_principal
       ))
     when "virsh"
       require 'dns/providers/virsh'
       @server = Proxy::DNS::Virsh.new(opts.merge(
-        :virsh_network => SETTINGS.virsh_network
+        :virsh_network => Proxy::DnsPlugin.settings.virsh_network
       ))
     else
-      log_halt 400, "Unrecognized or missing DNS provider: #{SETTINGS.dns_provider || "MISSING"}"
+      log_halt 400, "Unrecognized or missing DNS provider: #{Proxy::DnsPlugin.settings.dns_provider || "MISSING"}"
     end
   rescue => e
     log_halt 400, e

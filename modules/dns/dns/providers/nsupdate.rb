@@ -8,7 +8,7 @@ module Proxy::DNS
     attr_reader :resolver
 
     def initialize options = {}
-      raise "Unable to find Key file - check your dns_key settings" unless SETTINGS.dns_key == false or File.exists?(SETTINGS.dns_key)
+      raise "Unable to find Key file - check your dns_key settings" unless Proxy::DnsPlugin.settings.dns_key == false or File.exists?(Proxy::DnsPlugin.settings.dns_key)
       super(options)
     end
 
@@ -54,7 +54,7 @@ module Proxy::DNS
 
     def nsupdate_args
       args = ""
-      args = "-k #{SETTINGS.dns_key} " if SETTINGS.dns_key
+      args = "-k #{Proxy::DnsPlugin.settings.dns_key} " if Proxy::DnsPlugin.settings.dns_key
       args
     end
 

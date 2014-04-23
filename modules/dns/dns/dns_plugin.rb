@@ -1,5 +1,7 @@
 class Proxy::DnsPlugin < Proxy::Plugin
   http_rackup_path File.expand_path("http_config.ru", File.expand_path("../", __FILE__))
   https_rackup_path File.expand_path("http_config.ru", File.expand_path("../", __FILE__))
-  plugin :dns, ::Proxy::VERSION
+  
+  default_settings :dns_provider => 'nsupdate'
+  plugin :dns, ::Proxy::VERSION if settings.dns
 end

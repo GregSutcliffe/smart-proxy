@@ -1,7 +1,6 @@
 $LOAD_PATH.unshift File.expand_path("../", __FILE__)
 
 require 'dns/dns_plugin'
-require 'dns/dns_api'
 
 module Proxy::DNS
   class Error < RuntimeError; end

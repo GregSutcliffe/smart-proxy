@@ -27,6 +27,7 @@ module Proxy
   require 'root/root'
   require 'facts/facts'
   require 'dns/dns'
+  require 'tftp/tftp'
   require 'dhcp/dhcp'
   require 'puppetca/puppetca'
 
