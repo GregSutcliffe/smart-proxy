@@ -1,6 +1,7 @@
 APP_ROOT = "#{File.dirname(__FILE__)}/.."
 
 require 'sinatra'
+require 'sinatra-patch'
 require 'fileutils'
 require 'pathname'
 require 'checks'
