@@ -153,7 +153,7 @@ module Proxy::DHCP
       if cmd == "connect"
         om_binary = which("omshell")
         @om = IO.popen("/bin/sh -c '#{om_binary} 2>&1'", "r+")
-        @om.puts "key #{SETTINGS.dhcp_key_name} \"#{SETTINGS.dhcp_key_secret}\"" if SETTINGS.dhcp_key_name and SETTINGS.dhcp_key_secret
+        @om.puts "key #{Proxy::DhcpPlugin.settings.dhcp_key_name} \"#{Proxy::DhcpPlugin.settings.dhcp_key_secret}\"" if Proxy::DhcpPlugin.settings.dhcp_key_name and Proxy::DhcpPlugin.settings.dhcp_key_secret
         @om.puts "server #{name}"
         @om.puts "connect"
         @om.puts "new host"
@@ -222,9 +222,9 @@ module Proxy::DHCP
     end
 
     def filter_log log
-      secret = SETTINGS.dhcp_key_secret
+      secret = Proxy::DhcpPlugin.settings.dhcp_key_secret
       if secret.is_a?(String) and not secret.empty?
-        log.gsub!(SETTINGS.dhcp_key_secret,"[filtered]")
+        log.gsub!(Proxy::DhcpPlugin.settings.dhcp_key_secret,"[filtered]")
       end
       logger.debug log
     end

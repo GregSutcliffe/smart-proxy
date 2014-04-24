@@ -5,25 +5,25 @@ class Proxy::DhcpApi < ::Sinatra::Base
 
   before do
     begin
-      raise "Smart Proxy is not configured to support DHCP" unless SETTINGS.dhcp
-      case SETTINGS.dhcp_vendor.downcase
+      raise "Smart Proxy is not configured to support DHCP" unless Proxy::DhcpPlugin.settings.dhcp
+      case Proxy::DhcpPlugin.settings.dhcp_vendor.downcase
       when "isc"
         require 'dhcp/providers/server/isc'
-        unless SETTINGS.dhcp_config and SETTINGS.dhcp_leases \
-          and File.exist?(SETTINGS.dhcp_config) and File.exist?(SETTINGS.dhcp_leases)
+        unless Proxy::DhcpPlugin.settings.dhcp_config and Proxy::DhcpPlugin.settings.dhcp_leases \
+          and File.exist?(Proxy::DhcpPlugin.settings.dhcp_config) and File.exist?(Proxy::DhcpPlugin.settings.dhcp_leases)
           log_halt 400, "Unable to find the DHCP configuration or lease files"
         end
         @server = Proxy::DHCP::ISC.new({:name => "127.0.0.1",
-                                        :config => SETTINGS.dhcp_config,
-                                        :leases => File.read(SETTINGS.dhcp_leases)})
+                                        :config => Proxy::DhcpPlugin.settings.dhcp_config,
+                                        :leases => File.read(Proxy::DhcpPlugin.settings.dhcp_leases)})
       when "native_ms"
         require 'dhcp/providers/server/native_ms'
-        @server = Proxy::DHCP::NativeMS.new(:server => SETTINGS.dhcp_server ? SETTINGS.dhcp_server : "127.0.0.1")
+        @server = Proxy::DHCP::NativeMS.new(:server => Proxy::DhcpPlugin.settings.dhcp_server ? Proxy::DhcpPlugin.settings.dhcp_server : "127.0.0.1")
       when "virsh"
         require 'dhcp/providers/server/virsh'
-        @server = Proxy::DHCP::Virsh.new(:virsh_network => SETTINGS.virsh_network)
+        @server = Proxy::DHCP::Virsh.new(:virsh_network => Proxy::DhcpPlugin.settings.virsh_network)
       else
-        log_halt 400, "Unrecognized or missing DHCP vendor type: #{SETTINGS.dhcp_vendor.nil? ? "MISSING" : SETTINGS.dhcp_vendor}"
+        log_halt 400, "Unrecognized or missing DHCP vendor type: #{Proxy::DhcpPlugin.settings.dhcp_vendor.nil? ? "MISSING" : Proxy::DhcpPlugin.settings.dhcp_vendor}"
       end
       @subnets = @server.subnets
     rescue => e

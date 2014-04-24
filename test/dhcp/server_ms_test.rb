@@ -1,4 +1,6 @@
 require 'test_helper'
+
+require 'dhcp/dhcp'
 require 'dhcp/providers/server/native_ms'
 
 class DHCPServerMicrosoftTest < Test::Unit::TestCase

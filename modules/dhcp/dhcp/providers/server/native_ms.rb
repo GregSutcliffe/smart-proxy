@@ -161,7 +161,7 @@ module Proxy::DHCP
       execute(cmd, msg).each do |line|
         # 172.29.216.0   - 255.255.254.0  -Active        -DC BRS               -
         if match = line.match(/^\s*([\d\.]+)\s*-\s*([\d\.]+)\s*-\s*(Active|Disabled)/)
-          next if (managed_subnets = SETTINGS.dhcp_subnets) and !managed_subnets.include? "#{match[1]}/#{match[2]}"
+          next if (managed_subnets = Proxy::DhcpPlugin.settings.dhcp_subnets) and !managed_subnets.include? "#{match[1]}/#{match[2]}"
 
           subnet = Proxy::DHCP::Subnet.new(self, match[1], match[2])
         end
@@ -171,7 +171,7 @@ module Proxy::DHCP
     def execute cmd, msg=nil, error_only=false
       tsecs = 5
       response = nil
-      interpreter = SETTINGS.x86_64 ? 'c:\windows\sysnative\cmd.exe' : 'c:\windows\system32\cmd.exe'
+      interpreter = Proxy::DhcpPlugin.settings.x86_64 ? 'c:\windows\sysnative\cmd.exe' : 'c:\windows\system32\cmd.exe'
       command  = interpreter + ' /c c:\Windows\System32\netsh.exe -c dhcp ' + "server #{name} #{cmd}"
 
       std_in = std_out = std_err = nil

@@ -1,5 +1,4 @@
 require 'test_helper'
-require 'smart_proxy_new'
 require "dhcp/dhcp"
 
 class DHCPServerTest < Test::Unit::TestCase

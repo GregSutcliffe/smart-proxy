@@ -7,7 +7,6 @@ require 'checks'
 require 'webrick/https'
 
 require 'proxy/proxy'
-require 'proxy/settings_path'
 require 'proxy/settings'
 require 'proxy/log'
 require 'proxy/util'
@@ -15,8 +14,8 @@ require 'proxy/helpers'
 require 'proxy/plugin'
 
 module Proxy
+  ::SETTINGS_PATH = Pathname.new(__FILE__).join("..","config","settings.yml")
   ::SETTINGS = Settings.load_from_file
-  ::GLOBAL_SETTINGS = Settings.load_from_file
   VERSION = File.read(File.join(File.dirname(__FILE__), '../VERSION')).chomp
 
   ::Sinatra::Base.set :run, false
@@ -41,18 +40,18 @@ module Proxy
 
   MODULES = %w{dns dhcp tftp puppetca puppet bmc chefproxy}
   def self.features
-    MODULES.collect{|mod| mod if GLOBAL_SETTINGS.send mod}.compact
+    MODULES.collect{|mod| mod if SETTINGS.send mod}.compact
   end
 
   class Launcher
     include ::Proxy::Log
 
     def pid_path
-      GLOBAL_SETTINGS.daemon_pid
+      SETTINGS.daemon_pid
     end
 
     def create_pid_dir
-      if GLOBAL_SETTINGS.daemon
+      if SETTINGS.daemon
         FileUtils.mkdir_p(File.dirname(pid_path)) unless File.exists?(pid_path)
       end
     end
@@ -65,13 +64,13 @@ module Proxy
       Rack::Server.new(
         :app => app, 
         :server => :webrick,
-        :Port => GLOBAL_SETTINGS.http_port,
+        :Port => SETTINGS.http_port,
         :daemonize => false,
-        :pid => GLOBAL_SETTINGS.daemon ? pid_path : nil)
+        :pid => SETTINGS.daemon ? pid_path : nil)
     end
 
     def https_app
-      unless GLOBAL_SETTINGS.ssl_private_key and GLOBAL_SETTINGS.ssl_certificate and GLOBAL_SETTINGS.ssl_ca_file
+      unless SETTINGS.ssl_private_key and SETTINGS.ssl_certificate and SETTINGS.ssl_ca_file
         logger.info "Missing SSL setup, will not be listening on https port"
       else
         begin
@@ -82,12 +81,12 @@ module Proxy
           Rack::Server.new(
             :app => app,
             :server => :webrick,
-            :Port => GLOBAL_SETTINGS.https_port,
+            :Port => SETTINGS.https_port,
             :SSLEnable => true,
             :SSLVerifyClient => OpenSSL::SSL::VERIFY_PEER,
-            :SSLPrivateKey => OpenSSL::PKey::RSA.new(File.read(GLOBAL_SETTINGS.ssl_private_key)),
-            :SSLCertificate => OpenSSL::X509::Certificate.new(File.read(GLOBAL_SETTINGS.ssl_certificate)),
-            :SSLCACertificateFile => GLOBAL_SETTINGS.ssl_ca_file,
+            :SSLPrivateKey => OpenSSL::PKey::RSA.new(File.read(SETTINGS.ssl_private_key)),
+            :SSLCertificate => OpenSSL::X509::Certificate.new(File.read(SETTINGS.ssl_certificate)),
+            :SSLCACertificateFile => SETTINGS.ssl_ca_file,
             :daemonize => false,
             :pid => nil)
         rescue => e
@@ -117,7 +116,7 @@ module Proxy
 
       t2.join
 
-      Process.daemon if GLOBAL_SETTINGS.daemon
+      Process.daemon if SETTINGS.daemon
     end
   end
 end

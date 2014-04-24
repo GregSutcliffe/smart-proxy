@@ -1,8 +1,10 @@
 require 'test_helper'
 require 'json'
-require 'smart_proxy_new'
-require 'dhcp/providers/server/isc'
-require 'dhcp/dhcp_api'
+
+require 'sinatra'
+require 'dhcp/dhcp'
+require 'dhcp/dhcp/providers/server/isc'
+require 'dhcp/dhcp/dhcp_api'
 
 ENV['RACK_ENV'] = 'test'
 

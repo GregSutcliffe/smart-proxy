@@ -1,6 +1,4 @@
 require 'test_helper'
-require 'smart_proxy_new'
-require "dhcp/dhcp"
 
 class Proxy::DHCPRecordTest < Test::Unit::TestCase
 

@@ -9,9 +9,8 @@ class Settings < OpenStruct
 #  end
 
   def self.load_from_file(opts = {})
-    settings_path = opts[:settings_path] || Proxy::SETTINGS_PATH
+    settings_path = opts[:settings_path] || ::Proxy::SETTINGS_PATH
     defaults = opts[:defaults] || {}
-
     load(YAML.load(File.read(settings_path)), defaults)
   end
 
