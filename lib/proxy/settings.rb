@@ -4,10 +4,6 @@ require "ostruct"
 require "pathname"
 
 class Settings < OpenStruct
-#  DEFAULTS = [Proxy::DNS::DefaultSettings::DEFAULTS].inject({}) do |all, current| #, Proxy::Puppet::DefaultSettings::DEFAULTS
-#    all.merge!(current)
-#  end
-
   def self.load_from_file(opts = {})
     settings_path = opts[:settings_path] || ::Proxy::SETTINGS_PATH
     defaults = opts[:defaults] || {}

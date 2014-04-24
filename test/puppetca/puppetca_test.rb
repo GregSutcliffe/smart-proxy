@@ -2,7 +2,6 @@ require 'test_helper'
 require 'tempfile'
 require 'fileutils'
 
-require 'smart_proxy_new'
 require 'puppetca/puppetca'
 
 class ProxyTest < Test::Unit::TestCase

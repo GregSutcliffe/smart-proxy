@@ -14,8 +14,9 @@ require 'proxy/helpers'
 require 'proxy/plugin'
 
 module Proxy
-  ::SETTINGS_PATH = Pathname.new(__FILE__).join("..","config","settings.yml")
-  ::SETTINGS = Settings.load_from_file
+  SETTINGS_PATH = Pathname.new(__FILE__).join("..","..","config","settings.yml")
+  SETTINGS = Settings.load_from_file
+
   VERSION = File.read(File.join(File.dirname(__FILE__), '../VERSION')).chomp
 
   ::Sinatra::Base.set :run, false
