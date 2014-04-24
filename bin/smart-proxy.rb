@@ -4,7 +4,7 @@ $LOAD_PATH.unshift *Dir[File.expand_path("../../lib", __FILE__), File.expand_pat
 
 require 'bundler'
 require 'json'
-require 'smart_proxy_new'
+require 'smart_proxy'
 
 Bundler.require
 
