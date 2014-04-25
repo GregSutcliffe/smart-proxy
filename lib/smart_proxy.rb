@@ -34,6 +34,7 @@ module Proxy
   require 'tftp/tftp'
   require 'dhcp/dhcp'
   require 'puppetca/puppetca'
+  require 'puppet/puppet'
   require "realm/realm"
 
   def self.version

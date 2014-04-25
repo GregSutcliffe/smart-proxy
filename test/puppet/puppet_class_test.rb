@@ -1,11 +1,7 @@
-require 'test/test_helper'
+require 'test_helper'
+require 'puppet/puppet_class'
 
 class PuppetClassTest < Test::Unit::TestCase
-
-  def test_should_have_a_logger
-    assert_respond_to Proxy::Puppet, :logger
-  end
-
   def test_should_parse_modulename_correctly
     klass = Proxy::Puppet::PuppetClass.new "foreman_proxy::install"
     assert_equal "foreman_proxy", klass.module

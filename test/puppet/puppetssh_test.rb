@@ -1,5 +1,6 @@
 require 'test_helper'
-require 'proxy/puppet/puppet_ssh'
+require 'puppet/puppet_plugin'
+require 'puppet/puppet_ssh'
 
 class PuppetSshTest < Test::Unit::TestCase
   def setup
@@ -16,8 +17,8 @@ class PuppetSshTest < Test::Unit::TestCase
   end
 
   def test_command_line_with_sudo
-    SETTINGS.stubs(:puppetssh_sudo).returns(true)
-    SETTINGS.stubs(:puppetssh_command).returns('/bin/true')
+    Proxy::Puppet::Plugin.settings.stubs(:puppetssh_sudo).returns(true)
+    Proxy::Puppet::Plugin.settings.stubs(:puppetssh_command).returns('/bin/true')
     @puppetssh.stubs(:which).with("sudo", anything).returns("/usr/bin/sudo")
     @puppetssh.stubs(:which).with("ssh", anything).returns("/usr/bin/ssh")
 
@@ -27,8 +28,8 @@ class PuppetSshTest < Test::Unit::TestCase
   end
 
   def test_command_line_with_ssh_keyfile
-    SETTINGS.stubs(:puppetssh_keyfile).returns('/root/.ssh/id_rsa')
-    SETTINGS.stubs(:puppetssh_command).returns('/bin/true')
+    Proxy::Puppet::Plugin.settings.stubs(:puppetssh_keyfile).returns('/root/.ssh/id_rsa')
+    Proxy::Puppet::Plugin.settings.stubs(:puppetssh_command).returns('/bin/true')
     File.stubs(:exists?).returns(true)
     @puppetssh.stubs(:which).with("sudo", anything).returns("/usr/bin/sudo")
     @puppetssh.stubs(:which).with("ssh", anything).returns("/usr/bin/ssh")
@@ -39,8 +40,8 @@ class PuppetSshTest < Test::Unit::TestCase
   end
 
   def test_command_line_with_ssh_keyfile_that_doesnt_exists
-    SETTINGS.stubs(:puppetssh_keyfile).returns('/root/.ssh/id_rsa')
-    SETTINGS.stubs(:puppetssh_command).returns('/bin/true')
+    Proxy::Puppet::Plugin.settings.stubs(:puppetssh_keyfile).returns('/root/.ssh/id_rsa')
+    Proxy::Puppet::Plugin.settings.stubs(:puppetssh_command).returns('/bin/true')
     File.stubs(:exists?).returns(false)
     @puppetssh.stubs(:which).with("sudo", anything).returns("/usr/bin/sudo")
     @puppetssh.stubs(:which).with("ssh", anything).returns("/usr/bin/ssh")
@@ -51,8 +52,8 @@ class PuppetSshTest < Test::Unit::TestCase
   end
 
   def test_command_line_with_ssh_username
-    SETTINGS.stubs(:puppetssh_user).returns('root')
-    SETTINGS.stubs(:puppetssh_command).returns('/bin/true')
+    Proxy::Puppet::Plugin.settings.stubs(:puppetssh_user).returns('root')
+    Proxy::Puppet::Plugin.settings.stubs(:puppetssh_command).returns('/bin/true')
     @puppetssh.stubs(:which).with("sudo", anything).returns("/usr/bin/sudo")
     @puppetssh.stubs(:which).with("ssh", anything).returns("/usr/bin/ssh")
 
@@ -62,7 +63,7 @@ class PuppetSshTest < Test::Unit::TestCase
   end
 
   def test_command_line_without_sudo
-    SETTINGS.stubs(:puppetssh_command).returns('/bin/true')
+    Proxy::Puppet::Plugin.settings.stubs(:puppetssh_command).returns('/bin/true')
     @puppetssh.stubs(:which).with("sudo", anything).returns("/usr/bin/sudo")
     @puppetssh.stubs(:which).with("ssh", anything).returns("/usr/bin/ssh")
 
@@ -72,7 +73,7 @@ class PuppetSshTest < Test::Unit::TestCase
   end
 
   def test_missing_sudo
-    SETTINGS.stubs(:puppetssh_sudo).returns(true)
+    Proxy::Puppet::Plugin.settings.stubs(:puppetssh_sudo).returns(true)
     @puppetssh.stubs(:which).with("sudo", anything).returns(false)
     @puppetssh.stubs(:which).with("ssh", anything).returns("/usr/bin/ssh")
     @puppetssh.stubs(:shell_command).returns(true)
@@ -80,7 +81,7 @@ class PuppetSshTest < Test::Unit::TestCase
   end
 
   def test_missing_sudo_and_not_needed
-    SETTINGS.stubs(:puppetssh_sudo).returns(false)
+    Proxy::Puppet::Plugin.settings.stubs(:puppetssh_sudo).returns(false)
     @puppetssh.stubs(:which).with("sudo", anything).returns(false)
     @puppetssh.stubs(:which).with("ssh", anything).returns("/usr/bin/ssh")
     @puppetssh.stubs(:shell_command).returns(true)

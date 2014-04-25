@@ -1,4 +1,5 @@
 require 'test_helper'
+require 'puppet/environment'
 
 class PuppetEnvironmentTest < Test::Unit::TestCase
 

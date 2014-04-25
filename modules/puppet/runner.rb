@@ -1,11 +1,4 @@
-require 'proxy/util'
-
 module Proxy::Puppet
-  extend Proxy::Log
-  extend Proxy::Util
-  require 'proxy/puppet/puppet_class'
-  require 'proxy/puppet/environment'
-
   class Runner
     include Proxy::Log
     include Proxy::Util

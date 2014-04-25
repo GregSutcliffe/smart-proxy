@@ -1,4 +1,6 @@
-require 'test/test_helper'
+require 'test_helper'
+require 'puppet/initializer'
+require 'puppet/class_scanner'
 
 class ClassScannerTest < Test::Unit::TestCase
 

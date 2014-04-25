@@ -1,9 +1,9 @@
 require 'test_helper'
+require 'puppet/config_reader'
 
 class PuppetConfigReaderTest < Test::Unit::TestCase
-
   def setup
-    @puppet_conf = File.expand_path(File.join(File.dirname(__FILE__), 'fixtures', 'puppet.conf'))
+    @puppet_conf = File.expand_path(File.join(File.dirname(__FILE__), '..', 'fixtures', 'puppet.conf'))
   end
 
   def build

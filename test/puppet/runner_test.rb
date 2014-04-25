@@ -1,5 +1,5 @@
 require 'test_helper'
-require 'proxy/puppet'
+require 'puppet/runner'
 
 class RunnerTest < Test::Unit::TestCase
   def setup

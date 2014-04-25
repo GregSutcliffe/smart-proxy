@@ -1,5 +1,5 @@
 require 'test_helper'
-require 'proxy/puppet/salt'
+require 'puppet/salt'
 
 class PuppetSaltTest < Test::Unit::TestCase
   def setup

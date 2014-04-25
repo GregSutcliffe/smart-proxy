@@ -1,7 +1,12 @@
-class SmartProxy
+require 'puppet/environment'
+
+class Proxy::Puppet::Api < ::Sinatra::Base
+  include ::Proxy::Log
+  helpers ::Proxy::Helpers
+
   def puppet_setup(opts = {})
-    raise "Smart Proxy is not configured to support Puppet runs" unless SETTINGS.puppet
-    case SETTINGS.puppet_provider
+    raise "Smart Proxy is not configured to support Puppet runs" unless Proxy::Puppet::Plugin.settings.puppet
+    case Proxy::Puppet::Plugin.settings.puppet_provider
     when "puppetrun"
       require 'proxy/puppet/puppetrun'
       @server = Proxy::Puppet::PuppetRun.new(opts)
@@ -18,13 +23,13 @@ class SmartProxy
       require 'proxy/puppet/customrun'
       @server = Proxy::Puppet::CustomRun.new(opts)
     else
-      log_halt 400, "Unrecognized or missing puppet_provider: #{SETTINGS.puppet_provider || "MISSING"}"
+      log_halt 400, "Unrecognized or missing puppet_provider: #{Proxy::Puppet::Plugin.settings.puppet_provider || "MISSING"}"
     end
   rescue => e
     log_halt 400, e
   end
 
-  post "/puppet/run" do
+  post "/run" do
     nodes = params[:nodes]
     begin
       log_halt 400, "Failed puppet run: No nodes defined" unless nodes
@@ -34,7 +39,7 @@ class SmartProxy
     end
   end
 
-  get "/puppet/environments" do
+  get "/environments" do
     content_type :json
     begin
       Proxy::Puppet::Environment.all.map(&:name).to_json
@@ -43,7 +48,7 @@ class SmartProxy
     end
   end
 
-  get "/puppet/environments/:environment" do
+  get "/environments/:environment" do
     content_type :json
     begin
       env = Proxy::Puppet::Environment.find(params[:environment])
@@ -54,7 +59,7 @@ class SmartProxy
     end
   end
 
-  get "/puppet/environments/:environment/classes" do
+  get "/environments/:environment/classes" do
     content_type :json
     begin
       env = Proxy::Puppet::Environment.find(params[:environment])

@@ -85,10 +85,11 @@ class ::Proxy::Plugin
     def default_settings(a_hash = {})
       @plugin_default_settings ||= {}
       @plugin_default_settings.merge!(a_hash)
+      @settings = nil # reset memoized value
     end
 
     def settings
-      Settings.load_from_file(:defaults => plugin_default_settings)
+      @settings ||= Settings.load_from_file(:defaults => plugin_default_settings)
     end
   end
 

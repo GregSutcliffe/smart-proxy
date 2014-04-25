@@ -1,11 +1,11 @@
-require 'proxy/puppet/puppet_class'
+require 'puppet/puppet_class'
+require 'puppet'
 
 if Puppet::PUPPETVERSION.to_f >= 3.2
   require 'puppet/pops'
 
   module Proxy::Puppet
     class ClassScannerEParser
-
       class << self
         # scans a given directory and its sub directory for puppet classes
         # returns an array of PuppetClass objects.

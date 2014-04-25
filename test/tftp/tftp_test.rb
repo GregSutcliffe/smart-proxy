@@ -16,12 +16,12 @@ class TftpTest < Test::Unit::TestCase
   end
 
   def test_path_to_tftp_directory_with_tftproot_setting
-    Proxy::TftpPlugin.stubs(:settings).returns(Settings.new(:tftproot =>"/some/tftp/root"))
+    Proxy::TftpPlugin.settings.stubs(:tftproot).returns("/some/tftp/root")
     assert_equal Proxy::TftpPlugin.settings.tftproot, @tftp.send(:path)
   end
 
   def test_path_to_tftp_directory_with_relative_tftproot_setting
-    Proxy::TftpPlugin.stubs(:settings).returns(Settings.new(:tftproot =>"./some/root"))
+    Proxy::TftpPlugin.settings.stubs(:tftproot).returns("./some/root")
     assert_equal Pathname.new(__FILE__).join("..", "..", "..", "modules","tftp","tftp","some","root").to_s, @tftp.send(:path)
   end
 end

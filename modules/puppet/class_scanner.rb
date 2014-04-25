@@ -1,8 +1,7 @@
-require 'proxy/puppet/puppet_class'
+require 'puppet/puppet_class'
 
 module Proxy::Puppet
   class ClassScanner
-
     class << self
       # scans a given directory and its sub directory for puppet classes
       # returns an array of PuppetClass objects.
@@ -119,7 +118,6 @@ module Proxy::Puppet
           end
         end
       end
-
     end
   end
 end

@@ -1,8 +1,8 @@
 require 'test_helper'
-require 'helpers'
-require 'puppet_api'
 require 'json'
 require 'ostruct'
+require 'sinatra'
+require 'puppet/puppet_api'
 
 ENV['RACK_ENV'] = 'test'
 
@@ -10,7 +10,7 @@ class PuppetApiTest < Test::Unit::TestCase
   include Rack::Test::Methods
 
   def app
-    SmartProxy.new
+    Proxy::Puppet::Api.new
   end
 
   def setup
@@ -24,7 +24,7 @@ class PuppetApiTest < Test::Unit::TestCase
 
   def test_api_gets_puppet_environments
     Proxy::Puppet::Environment.expects(:all).returns([@foo, @bar])
-    get "/puppet/environments"
+    get "/environments"
     assert last_response.ok?, "Last response was not ok: #{last_response.body}"
     data = JSON.parse(last_response.body)
     assert_equal ["foo", "bar"], data
@@ -32,7 +32,7 @@ class PuppetApiTest < Test::Unit::TestCase
 
   def test_api_gets_single_puppet_environment
     Proxy::Puppet::Environment.expects(:find).with("foo").returns(@foo)
-    get "/puppet/environments/foo"
+    get "/environments/foo"
     assert last_response.ok?, "Last response was not ok: #{last_response.body}"
     data = JSON.parse(last_response.body)
     assert_equal "foo", data["name"]
@@ -41,13 +41,13 @@ class PuppetApiTest < Test::Unit::TestCase
 
   def test_api_missing_single_puppet_environment
     Proxy::Puppet::Environment.expects(:find).with("unknown").returns(nil)
-    get "/puppet/environments/unknown"
+    get "/environments/unknown"
     assert_equal 404, last_response.status
   end
 
   def test_api_gets_puppet_environment_classes
     Proxy::Puppet::Environment.expects(:find).with("foo").returns(@foo)
-    get "/puppet/environments/foo/classes"
+    get "/environments/foo/classes"
     assert last_response.ok?, "Last response was not ok: #{last_response.body}"
     data = JSON.parse(last_response.body)
     assert_equal Array, data.class
