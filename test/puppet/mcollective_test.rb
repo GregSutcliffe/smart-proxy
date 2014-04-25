@@ -1,5 +1,6 @@
 require 'test_helper'
-require 'proxy/puppet/mcollective'
+require 'puppet/puppet_plugin'
+require 'puppet/mcollective'
 
 class MCollectiveTest < Test::Unit::TestCase
   def setup
@@ -17,7 +18,7 @@ class MCollectiveTest < Test::Unit::TestCase
   def test_run_command_with_puppet_user_defined
     @mcollective.stubs(:which).with("sudo", anything).returns("/usr/bin/sudo")
     @mcollective.stubs(:which).with("mco", anything).returns("/usr/bin/mco")
-    SETTINGS.stubs(:puppet_user).returns("example")
+    Proxy::Puppet::Plugin.settings.stubs(:puppet_user).returns("example")
 
     @mcollective.expects(:shell_command).with(["/usr/bin/sudo", "-u", "example", "/usr/bin/mco", "puppet", "runonce", "-I", "host1", "host2"]).returns(true)
 
