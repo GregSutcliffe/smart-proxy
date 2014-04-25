@@ -1,4 +1,4 @@
-require 'proxy/bmc/base'
+require 'bmc/base'
 
 module Proxy
   module BMC

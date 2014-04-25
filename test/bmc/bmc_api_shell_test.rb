@@ -1,7 +1,7 @@
 require 'test_helper'
-require 'helpers'
-require 'bmc_api'
 require 'json'
+require 'sinatra'
+require 'bmc/bmc_api'
 
 ENV['RACK_ENV'] = 'test'
 
@@ -9,7 +9,7 @@ class BmcApiShellTest < Test::Unit::TestCase
   include Rack::Test::Methods
 
   def app
-    SmartProxy.new
+    Proxy::BMC::Api.new
   end
 
   def setup
@@ -19,13 +19,13 @@ class BmcApiShellTest < Test::Unit::TestCase
     @host    ||= ENV["ipmihost"] || "host"
     provider ||= ENV["ipmiprovider"] || "shell"
     @args    = { :bmc_provider => provider }
-    require 'proxy/bmc/shell'
+    require 'bmc/shell'
   end
 
   def test_api_shell_should_powercycle_with_shutdown
     Proxy::BMC::Shell.any_instance.stubs(:powercycle).returns(true)
     args = { :bmc_provider => 'shell' }
-    get "/bmc/#{host}/chassis/power/cycle", args
+    get "/#{host}/chassis/power/cycle", args
     @args = { :username => "user", :password => "pass", :bmc_provider => "ipmitool", :host => "host" }
   end
 

@@ -1,5 +1,5 @@
 require 'test_helper'
-require 'proxy/bmc/ipmi'
+require 'bmc/ipmi'
 
 class BmcTest < Test::Unit::TestCase
 

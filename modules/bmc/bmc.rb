@@ -1,6 +1,7 @@
+require 'bmc/bmc_plugin'
+
 module Proxy
   module BMC
-
     # Just a bunch of stubs
     def self.installed_providers?
     end

@@ -35,6 +35,7 @@ module Proxy
   require 'dhcp/dhcp'
   require 'puppetca/puppetca'
   require 'puppet/puppet'
+  require 'bmc/bmc'
   require "realm/realm"
 
   def self.version
