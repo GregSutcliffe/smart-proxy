@@ -3,7 +3,7 @@ require 'pathname'
 require "proxy/util"
 
 module Proxy::TFTP
-  class Tftp
+  class Server
     include Proxy::Log
     # Creates TFTP pxeconfig file
     def set mac, config
@@ -51,14 +51,14 @@ module Proxy::TFTP
     protected
     # returns the absolute path
     def path(p = nil)
-      p ||= Proxy::TftpPlugin.settings.tftproot || File.expand_path(File.dirname(__FILE__)) + "/tftpboot"
+      p ||= Proxy::TFTP::Plugin.settings.tftproot || File.expand_path(File.dirname(__FILE__)) + "/tftpboot"
       # are we running in RAILS or as a standalone CGI?
       dir = defined?(RAILS_ROOT) ? RAILS_ROOT : File.expand_path(File.dirname(__FILE__))
       return (p =~ /^\//) ? p : Pathname.new(dir).join(p).to_s
     end
   end
 
-  class Syslinux < Tftp
+  class Syslinux < Server
     def pxeconfig_dir
       "#{path}/pxelinux.cfg"
     end
@@ -70,7 +70,7 @@ module Proxy::TFTP
     end
   end
 
-  class Pxegrub < Tftp
+  class Pxegrub < Server
     def pxeconfig_dir
       "#{path}"
     end
@@ -82,7 +82,7 @@ module Proxy::TFTP
     end
   end
 
-  class Ztp < Tftp
+  class Ztp < Server
     def pxeconfig_dir
       "#{path}/ztp.cfg"
     end
@@ -98,7 +98,7 @@ module Proxy::TFTP
     include Proxy::Util
     def fetch_boot_file dst, src
       filename    = src.split("/")[-1]
-      destination = Pathname.new("#{Proxy::TftpPlugin.settings.tftproot}/#{dst}-#{filename}")
+      destination = Pathname.new("#{Proxy::TFTP::Plugin.settings.tftproot}/#{dst}-#{filename}")
 
       # Ensure that our image directory exists
       # as the dst might contain another sub directory

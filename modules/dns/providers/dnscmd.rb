@@ -1,7 +1,7 @@
 require 'resolv'
 require 'win32/open3'
 
-module Proxy::DNS
+module Proxy::Dns
   class Dnscmd < Record
     include Proxy::Log
     include Proxy::Util
@@ -19,7 +19,7 @@ module Proxy::DNS
       case @type
       when "A"
         if ip = dns_find(@fqdn)
-          raise(Proxy::DNS::Collision, "#{@fqdn} is already used by #{ip}") unless ip == @value
+          raise(Proxy::Dns::Collision, "#{@fqdn} is already used by #{ip}") unless ip == @value
         else
           zone = @fqdn.sub(/[^.]+./,'')
           msg = "Added DNS entry #{@fqdn} => #{@value}"
@@ -28,7 +28,7 @@ module Proxy::DNS
         end
       when "PTR"
         if name = dns_find(@value)
-          raise(Proxy::DNS::Collision, "#{@value} is already used by #{name}") unless name == @fqdn
+          raise(Proxy::Dns::Collision, "#{@value} is already used by #{name}") unless name == @fqdn
         else
           # TODO: determine reverse zone names, #4025
           return true
@@ -56,7 +56,7 @@ module Proxy::DNS
     def execute cmd, msg=nil, error_only=false
       tsecs = 5
       response = nil
-      interpreter = Proxy::DnsPlugin.settings.x86_64 ? 'c:\windows\sysnative\cmd.exe' : 'c:\windows\system32\cmd.exe'
+      interpreter = Proxy::Dns::Plugin.settings.x86_64 ? 'c:\windows\sysnative\cmd.exe' : 'c:\windows\system32\cmd.exe'
       command  = interpreter + ' /c c:\Windows\System32\dnscmd.exe ' + "#{@server} #{cmd}"
 
       std_in = std_out = std_err = nil
@@ -68,7 +68,7 @@ module Proxy::DNS
           response += std_err.readlines
         end
       rescue TimeoutError
-        raise Proxy::DNS::Error.new("dnscmd did not respond within #{tsecs} seconds")
+        raise Proxy::Dns::Error.new("dnscmd did not respond within #{tsecs} seconds")
       ensure
         std_in.close  unless std_in.nil?
         std_out.close unless std_in.nil?
@@ -84,15 +84,15 @@ module Proxy::DNS
         msg.sub! /Added/,      "add"
         match = ""
         msg  = "Failed to #{msg}"
-        raise Proxy::DNS::Error.new(msg)
+        raise Proxy::Dns::Error.new(msg)
       else
         logger.info msg unless error_only
       end
-    rescue Proxy::DNS::Error
+    rescue Proxy::Dns::Error
       raise
     rescue
       logger.error "Dnscmd failed:\n" + (response.is_a?(Array) ? response.join("\n") : "Response was not an array! #{response}")
-      raise Proxy::DNS::Error.new("Unknown error while processing '#{msg}'")
+      raise Proxy::Dns::Error.new("Unknown error while processing '#{msg}'")
     end
 
     def dns_find key

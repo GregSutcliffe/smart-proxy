@@ -1,5 +1,5 @@
 require 'puppetca/puppetca_api'
 
 map "/puppet/ca" do
-  run Proxy::PuppetCaApi
+  run Proxy::PuppetCa::Api
 end

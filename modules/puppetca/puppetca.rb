@@ -1,5 +1,3 @@
-$LOAD_PATH.unshift File.expand_path("../", __FILE__)
-
 require 'puppetca/puppetca_plugin'
 require 'openssl'
 
@@ -141,11 +139,11 @@ module Proxy::PuppetCa
     end
 
     def ssldir
-      Proxy::PuppetCAPlugin.settings.ssldir || "/var/lib/puppet/ssl"
+      Proxy::PuppetCa::Plugin.settings.ssldir || "/var/lib/puppet/ssl"
     end
 
     def puppetdir
-      Proxy::PuppetCAPlugin.settings.puppetdir || "/etc/puppet"
+      Proxy::PuppetCa::Plugin.settings.puppetdir || "/etc/puppet"
     end
 
     def autosign_file

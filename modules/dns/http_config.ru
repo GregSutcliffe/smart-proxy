@@ -1,5 +1,5 @@
 require 'dns/dns_api'
 
 map "/dns" do
-  run Proxy::DnsApi
+  run Proxy::Dns::Api
 end

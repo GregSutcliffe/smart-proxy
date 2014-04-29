@@ -1,7 +1,7 @@
 require 'dns/providers/nsupdate'
 require 'kerberos'
 
-module Proxy::DNS
+module Proxy::Dns
   class NsupdateGSS < Nsupdate
     include Proxy::Kerberos
     attr_reader :tsig_keytab, :tsig_principal

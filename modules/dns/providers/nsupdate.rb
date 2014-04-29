@@ -1,6 +1,6 @@
 require 'resolv'
 
-module Proxy::DNS
+module Proxy::Dns
   class Nsupdate < Record
 
     include Proxy::Log
@@ -8,7 +8,7 @@ module Proxy::DNS
     attr_reader :resolver
 
     def initialize options = {}
-      raise "Unable to find Key file - check your dns_key settings" unless Proxy::DnsPlugin.settings.dns_key == false or File.exists?(Proxy::DnsPlugin.settings.dns_key)
+      raise "Unable to find Key file - check your dns_key settings" unless Proxy::Dns::Plugin.settings.dns_key == false or File.exists?(Proxy::Dns::Plugin.settings.dns_key)
       super(options)
     end
 
@@ -22,13 +22,13 @@ module Proxy::DNS
       case @type
         when "A"
           if ip = dns_find(@fqdn)
-            raise(Proxy::DNS::Collision, "#{@fqdn} is already used by #{ip}") unless ip == @value
+            raise(Proxy::Dns::Collision, "#{@fqdn} is already used by #{ip}") unless ip == @value
           else
             nsupdate "update add #{@fqdn}.  #{@ttl} #{@type} #{@value}"
           end
         when "PTR"
           if name = dns_find(@value)
-            raise(Proxy::DNS::Collision, "#{@value} is already used by #{name}") unless name == @fqdn
+            raise(Proxy::Dns::Collision, "#{@value} is already used by #{name}") unless name == @fqdn
           else
             nsupdate "update add #{@value}.  #{@ttl} IN #{@type} #{@fqdn}"
           end
@@ -54,7 +54,7 @@ module Proxy::DNS
 
     def nsupdate_args
       args = ""
-      args = "-k #{Proxy::DnsPlugin.settings.dns_key} " if Proxy::DnsPlugin.settings.dns_key
+      args = "-k #{Proxy::Dns::Plugin.settings.dns_key} " if Proxy::Dns::Plugin.settings.dns_key
       args
     end
 
@@ -77,7 +77,7 @@ module Proxy::DNS
         # TODO Parse output for errors!
         if !status.empty? and status[1] !~ /status: NOERROR/
           logger.debug "nsupdate: errors\n" + status.join("\n")
-          raise Proxy::DNS::Error.new("Update errors: #{status.join("\n")}")
+          raise Proxy::Dns::Error.new("Update errors: #{status.join("\n")}")
         end
       else
         logger.debug "nsupdate: executed - #{cmd}"

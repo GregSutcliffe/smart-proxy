@@ -32,5 +32,4 @@ module Proxy::DHCP
   def kind
     self.class.to_s.sub("Proxy::DHCP::","").downcase
   end
-
 end

@@ -1,8 +1,6 @@
-$LOAD_PATH.unshift File.expand_path("../", __FILE__)
-
 require 'dns/dns_plugin'
 
-module Proxy::DNS
+module Proxy::Dns
   class Error < RuntimeError; end
   class Collision < RuntimeError; end
   class Record

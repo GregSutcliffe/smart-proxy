@@ -1,6 +1,6 @@
 require "proxy/virsh"
 
-module Proxy::DNS
+module Proxy::Dns
   class Virsh < Record
     include Proxy::Log
     include Proxy::Util
@@ -18,7 +18,7 @@ module Proxy::DNS
         if result =~ /^Updated/
           return true
         else
-          raise Proxy::DNS::Error.new("DNS update error: #{result}")
+          raise Proxy::Dns::Error.new("DNS update error: #{result}")
         end
       else
         logger.warn "not creating #{@type} record for #{@fqdn} (unsupported)"
@@ -31,7 +31,7 @@ module Proxy::DNS
         if result =~ /^Updated/
           return true
         else
-          raise Proxy::DNS::Error.new("DNS update error: #{result}")
+          raise Proxy::Dns::Error.new("DNS update error: #{result}")
         end
       else
         logger.warn "not deleting #{@type} record for #{@fqdn} (unsupported)"
