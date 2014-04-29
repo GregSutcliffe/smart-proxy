@@ -6,6 +6,7 @@ require 'fileutils'
 require 'pathname'
 require 'checks'
 require 'webrick/https'
+require 'daemon' # FIXME: Do we still need this?
 
 require 'proxy/proxy'
 require 'proxy/settings'
