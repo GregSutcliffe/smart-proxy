@@ -11,6 +11,7 @@ require 'proxy/log'
 require 'proxy/util'
 require 'proxy/helpers'
 require 'proxy/plugin'
+require 'proxy/error'
 
 require "mocha/setup"
 require "rack/test"

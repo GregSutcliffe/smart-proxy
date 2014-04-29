@@ -3,6 +3,6 @@ module Proxy::Chef
     http_rackup_path File.expand_path("http_config.ru", File.expand_path("../", __FILE__))
     https_rackup_path File.expand_path("http_config.ru", File.expand_path("../", __FILE__))
   
-    plugin :chef, ::Proxy::VERSION if settings.chef
+    plugin :chefproxy, ::Proxy::VERSION if settings.chefproxy
   end
 end

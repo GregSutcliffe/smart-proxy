@@ -1,18 +1,19 @@
 require 'test_helper'
 require 'webmock/test_unit'
-require 'proxy/authentication'
+require 'chef/chef_plugin'
+require 'chef/authentication'
 require 'net/https'
 require 'sinatra'
 
 class AuthenticationChefTest < Test::Unit::TestCase
 
   def setup
-    @chefauth = Proxy::Authentication::Chef.new
+    @chefauth = Proxy::Chef::Authentication.new
 
     #We set a few chef related settings
-    SETTINGS.stubs(:chef_server_url).returns('https://chef.example.com')
-    SETTINGS.stubs(:chef_smartproxy_clientname).returns('testnode1')
-    SETTINGS.stubs(:chef_smartproxy_privatekey).returns('test/fixtures/authentication/testnode1.priv')
+    Proxy::Chef::Plugin.settings.stubs(:chef_server_url).returns('https://chef.example.com')
+    Proxy::Chef::Plugin.settings.stubs(:chef_smartproxy_clientname).returns('testnode1')
+    Proxy::Chef::Plugin.settings.stubs(:chef_smartproxy_privatekey).returns('test/fixtures/authentication/testnode1.priv')
 
 
     testnode1_key_path = 'test/fixtures/authentication/testnode1'
@@ -45,7 +46,7 @@ class AuthenticationChefTest < Test::Unit::TestCase
   end
 
   def test_auth_disabled_should_always_success
-    SETTINGS.stubs(:chef_authenticate_nodes).returns(false)
+    Proxy::Chef::Plugin.settings.stubs(:chef_authenticate_nodes).returns(false)
     s = StringIO.new('Hello')
     request = Sinatra::Request.new(env={'rack.input' => s})
     result = @chefauth.authenticated(request) do |content|
@@ -56,7 +57,7 @@ class AuthenticationChefTest < Test::Unit::TestCase
   end
 
   def test_auth_enable_without_headers_should_raise_an_error
-    SETTINGS.stubs(:chef_authenticate_nodes).returns(true)
+    Proxy::Chef::Plugin.settings.stubs(:chef_authenticate_nodes).returns(true)
     s = StringIO.new('Hello')
     request = Sinatra::Request.new(env={'rack.input' => s})
     begin

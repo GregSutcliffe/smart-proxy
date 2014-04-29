@@ -2,25 +2,24 @@ require 'net/http'
 require 'net/https'
 require 'uri'
 
-
-module Proxy::ChefProxy
-
+# TODO: need settings validation on startup, otherwise we get a 500 error due to missing/wrong config settings when api is accessed
+module Proxy::Chef
   class ForemanRequest
     def send_request(path, body)
-      uri              = URI.parse(SETTINGS.foreman_url.to_s)
+      uri              = URI.parse(Proxy::Chef::Plugin.settings.foreman_url.to_s)
       http             = Net::HTTP.new(uri.host, uri.port)
       http.use_ssl     = uri.scheme == 'https'
       http.verify_mode = OpenSSL::SSL::VERIFY_NONE
 
       if http.use_ssl?
-        if SETTINGS.foreman_ssl_ca && !SETTINGS.foreman_ssl_ca.to_s.empty?
-          http.ca_file     = SETTINGS.foreman_ssl_ca
+        if Proxy::Chef::Plugin.settings.foreman_ssl_ca && !Proxy::Chef::Plugin.settings.foreman_ssl_ca.to_s.empty?
+          http.ca_file     = Proxy::Chef::Plugin.settings.foreman_ssl_ca
           http.verify_mode = OpenSSL::SSL::VERIFY_PEER
         end
 
-        if SETTINGS.foreman_ssl_cert && !SETTINGS.foreman_ssl_cert.to_s.empty? && SETTINGS.foreman_ssl_key && !SETTINGS.foreman_ssl_key.to_s.empty?
-          http.cert = OpenSSL::X509::Certificate.new(File.read(SETTINGS.foreman_ssl_cert))
-          http.key  = OpenSSL::PKey::RSA.new(File.read(SETTINGS.foreman_ssl_key), nil)
+        if Proxy::Chef::Plugin.settings.foreman_ssl_cert && !Proxy::Chef::Plugin.settings.foreman_ssl_cert.to_s.empty? && Proxy::Chef::Plugin.settings.foreman_ssl_key && !Proxy::Chef::Plugin.settings.foreman_ssl_key.to_s.empty?
+          http.cert = OpenSSL::X509::Certificate.new(File.read(Proxy::Chef::Plugin.settings.foreman_ssl_cert))
+          http.key  = OpenSSL::PKey::RSA.new(File.read(Proxy::Chef::Plugin.settings.foreman_ssl_key), nil)
         end
       end
 

@@ -1,18 +1,16 @@
-module Proxy::Authentication
-  class Chef
+module Proxy::Chef
+  class Authentication
     require 'chef'
     require 'digest/sha2'
     require 'base64'
     require 'openssl'
-    require 'helpers'
-    require 'proxy/error'
 
     def verify_signature_request(client_name,signature,body)
       #We need to retrieve node public key
       #to verify signature
-      chefurl = SETTINGS.chef_server_url
-      chef_smartproxy_clientname = SETTINGS.chef_smartproxy_clientname
-      key = SETTINGS.chef_smartproxy_privatekey
+      chefurl = Proxy::Chef::Plugin.settings.chef_server_url
+      chef_smartproxy_clientname = Proxy::Chef::Plugin.settings.chef_smartproxy_clientname
+      key = Proxy::Chef::Plugin.settings.chef_smartproxy_privatekey
       rest = ::Chef::REST.new(chefurl,chef_smartproxy_clientname,key)
       begin
         public_key = OpenSSL::PKey::RSA.new(rest.get_rest("/clients/#{client_name}").public_key)
@@ -32,7 +30,7 @@ module Proxy::Authentication
       content     = request.env["rack.input"].read
 
       auth = true
-      if SETTINGS.chef_authenticate_nodes
+      if Proxy::Chef::Plugin.settings.chef_authenticate_nodes
         client_name = request.env['HTTP_X_FOREMAN_CLIENT']
         signature   = request.env['HTTP_X_FOREMAN_SIGNATURE']
 

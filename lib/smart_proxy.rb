@@ -14,6 +14,7 @@ require 'proxy/log'
 require 'proxy/util'
 require 'proxy/helpers'
 require 'proxy/plugin'
+require 'proxy/error'
 
 module Proxy
   SETTINGS_PATH = Pathname.new(__FILE__).join("..","..","config","settings.yml")
@@ -37,6 +38,7 @@ module Proxy
   require 'puppetca/puppetca'
   require 'puppet/puppet'
   require 'bmc/bmc'
+  require 'chef/chef'
   require "realm/realm"
 
   def self.version
