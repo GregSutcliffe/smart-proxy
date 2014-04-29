@@ -1,9 +1,8 @@
 require 'gssapi'
-require 'helpers'
 require 'proxy/kerberos'
-require 'proxy/util'
 require 'uri'
 require 'xmlrpc/client'
+require 'realm/client'
 
 module Proxy::Realm
   class FreeIPA < Client
