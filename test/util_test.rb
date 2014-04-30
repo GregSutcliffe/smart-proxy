@@ -1,5 +1,4 @@
 require 'test_helper'
-require 'smart_proxy_new'
 
 class ProxyUtilTest < Test::Unit::TestCase
   class UtilClass; extend Proxy::Util; end
