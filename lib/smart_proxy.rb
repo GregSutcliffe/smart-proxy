@@ -45,7 +45,7 @@ module Proxy
     {:version => VERSION}
   end
 
-  MODULES = %w{dns dhcp tftp puppetca puppet bmc chefproxy}
+  MODULES = %w{dns dhcp tftp puppetca puppet bmc chefproxy realm}
   def self.features
     MODULES.collect{|mod| mod if SETTINGS.send mod}.compact
   end

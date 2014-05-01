@@ -13,7 +13,7 @@ class Proxy::Puppet::ConfigReader
 
     aug = nil
     begin
-      aug = Augeas::open(nil, nil, Augeas::NO_MODL_AUTOLOAD)
+      aug = ::Augeas::open(nil, nil, ::Augeas::NO_MODL_AUTOLOAD)
       aug.set('/augeas/load/Puppet/lens', 'Puppet.lns')
       aug.set('/augeas/load/Puppet/incl', config)
       aug.load

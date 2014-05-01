@@ -7,12 +7,12 @@ class Proxy::Puppet::PuppetClass
     # returns an array of PuppetClass objects.
     def scan_directory directory, eparser = false
       # Get a Puppet Parser to parse the manifest source
-      Initializer.load
+      Proxy::Puppet::Initializer.load
 
       if eparser
-        ClassScannerEParser.scan_directory directory
+        Proxy::Puppet::ClassScannerEParser.scan_directory directory
       else
-        ClassScanner.scan_directory directory
+        Proxy::Puppet::ClassScanner.scan_directory directory
       end
     end
   end
