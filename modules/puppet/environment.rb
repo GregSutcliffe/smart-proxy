@@ -21,7 +21,7 @@ class Proxy::Puppet::Environment
 
     def puppet_environments
       Proxy::Puppet::Initializer.load
-      conf = Proxy::Puppet::ConfigReader.new(Initializer.config).get
+      conf = Proxy::Puppet::ConfigReader.new(Proxy::Puppet::Initializer.config).get
 
       env = { }
       # query for the environments variable
