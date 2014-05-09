@@ -113,12 +113,12 @@ module Proxy
       http_app = launcher.http_app
       https_app = launcher.https_app
 
-      t1 = Thread.new { http_app.start }  
-      t2 = Thread.new { https_app.start } unless https_app.nil?
+      t1 = Thread.new { http_app.start } unless http_app.nil?
+      t2 = Thread.new { https_app.start }
 
       trap(:INT) do
-        http_app.shutdown
-        https_app.shutdown unless https_app.nil?
+        https_app.shutdown
+        http_app.shutdown unless http_app.nil?
       end
 
       t2.join
