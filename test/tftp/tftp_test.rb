@@ -12,7 +12,7 @@ class TftpTest < Test::Unit::TestCase
   end
 
   def test_path_to_tftp_directory_without_tftproot_setting
-    assert_equal Pathname.new(__FILE__).join("..", "..", "..", "modules","tftp","tftpboot").to_s, @tftp.send(:path)
+    assert_equal "/var/lib/tftpboot", @tftp.send(:path)
   end
 
   def test_path_to_tftp_directory_with_tftproot_setting

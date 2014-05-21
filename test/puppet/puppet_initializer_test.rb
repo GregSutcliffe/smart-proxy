@@ -1,4 +1,5 @@
 require 'test_helper'
+require 'puppet/puppet_plugin'
 require 'puppet/initializer'
 
 class PuppetInitializerTest < Test::Unit::TestCase
@@ -8,14 +9,11 @@ class PuppetInitializerTest < Test::Unit::TestCase
   end
 
   def test_config_returns_puppetdir
-    Proxy::Puppet::Plugin.settings.stubs(:puppet_conf).returns(nil)
     Proxy::Puppet::Plugin.settings.expects(:puppetdir).returns('/foo')
     assert_equal '/foo/puppet.conf', Proxy::Puppet::Initializer.config
   end
 
   def test_config_returns_default
-    Proxy::Puppet::Plugin.settings.stubs(:puppet_conf).returns(nil)
-    Proxy::Puppet::Plugin.settings.expects(:puppetdir).returns(nil)
     assert_equal '/etc/puppet/puppet.conf', Proxy::Puppet::Initializer.config
   end
 end

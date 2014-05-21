@@ -4,6 +4,6 @@ module Proxy::Dns
     https_rackup_path File.expand_path("http_config.ru", File.expand_path("../", __FILE__))
   
     default_settings :dns_provider => 'nsupdate'
-    plugin :dns, ::Proxy::VERSION if settings.dns
+    plugin :dns, ::Proxy::VERSION
   end
 end

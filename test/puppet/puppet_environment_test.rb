@@ -1,7 +1,12 @@
 require 'test_helper'
+require 'puppet/puppet_plugin'
 require 'puppet/environment'
 
 class PuppetEnvironmentTest < Test::Unit::TestCase
+
+  def setup
+    Proxy::Puppet::Plugin.load_test_settings(:puppet_conf => './test/fixtures/puppet.conf')
+  end
 
   def test_puppet_class_should_be_an_opject
     klass = Proxy::Puppet::Environment.new :name => "production", :paths => ["/etc/puppet/env/production"]

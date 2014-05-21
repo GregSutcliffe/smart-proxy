@@ -50,11 +50,10 @@ module Proxy::TFTP
 
     protected
     # returns the absolute path
+    # TODO: 
     def path(p = nil)
-      p ||= Proxy::TFTP::Plugin.settings.tftproot || File.expand_path(File.dirname(__FILE__)) + "/tftpboot"
-      # are we running in RAILS or as a standalone CGI?
-      dir = defined?(RAILS_ROOT) ? RAILS_ROOT : File.expand_path(File.dirname(__FILE__))
-      return (p =~ /^\//) ? p : Pathname.new(dir).join(p).to_s
+      p ||= Proxy::TFTP::Plugin.settings.tftproot
+      return (p =~ /^\//) ? p : Pathname.new(File.expand_path(File.dirname(__FILE__))).join(p).to_s
     end
   end
 

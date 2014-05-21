@@ -3,10 +3,12 @@ require 'net/https'
 require 'uri'
 
 # TODO: need settings validation on startup, otherwise we get a 500 error due to missing/wrong config settings when api is accessed
+# TODO: shouldn't SSL settings use ssl_certificate, ssl_ca_file, and ssl_private_key as opposed to foreman_ssl_ca, foreman_ssl_cert, and foreman_ssl_key?
+
 module Proxy::Chef
   class ForemanRequest
     def send_request(path, body)
-      uri              = URI.parse(Proxy::Chef::Plugin.settings.foreman_url.to_s)
+      uri              = URI.parse(Proxy::SETTINGS.foreman_url.to_s)
       http             = Net::HTTP.new(uri.host, uri.port)
       http.use_ssl     = uri.scheme == 'https'
       http.verify_mode = OpenSSL::SSL::VERIFY_NONE

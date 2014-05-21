@@ -6,16 +6,13 @@ require 'net/https'
 require 'sinatra'
 
 class AuthenticationChefTest < Test::Unit::TestCase
-
   def setup
     @chefauth = Proxy::Chef::Authentication.new
 
-    #We set a few chef related settings
-    Proxy::Chef::Plugin.settings.stubs(:chef_server_url).returns('https://chef.example.com')
-    Proxy::Chef::Plugin.settings.stubs(:chef_smartproxy_clientname).returns('testnode1')
-    Proxy::Chef::Plugin.settings.stubs(:chef_smartproxy_privatekey).returns('test/fixtures/authentication/testnode1.priv')
-
-
+    ::Proxy::Chef::Plugin.settings.stubs(:chef_server_url).returns('https://chef.example.com')
+    ::Proxy::Chef::Plugin.settings.stubs(:chef_smartproxy_clientname).returns('testnode1')
+    ::Proxy::Chef::Plugin.settings.stubs(:chef_smartproxy_privatekey).returns('test/fixtures/authentication/testnode1.priv')
+    
     testnode1_key_path = 'test/fixtures/authentication/testnode1'
     testnode2_key_path = 'test/fixtures/authentication/testnode2'
     testnode1_key = OpenSSL::PKey::RSA.new(File.read(testnode1_key_path+'.priv'))

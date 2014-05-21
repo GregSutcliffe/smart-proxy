@@ -139,11 +139,11 @@ module Proxy::PuppetCa
     end
 
     def ssldir
-      Proxy::PuppetCa::Plugin.settings.ssldir || "/var/lib/puppet/ssl"
+      Proxy::PuppetCa::Plugin.settings.ssldir
     end
 
     def puppetdir
-      Proxy::PuppetCa::Plugin.settings.puppetdir || "/etc/puppet"
+      Proxy::PuppetCa::Plugin.settings.puppetdir
     end
 
     def autosign_file

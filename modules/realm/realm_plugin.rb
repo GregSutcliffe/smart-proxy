@@ -4,6 +4,6 @@ module Proxy::Realm
     https_rackup_path File.expand_path("http_config.ru", File.expand_path("../", __FILE__))
 
     default_settings :realm_provider => 'freeipa'
-    plugin :realm, ::Proxy::VERSION if settings.realm
+    plugin :realm, ::Proxy::VERSION
   end
 end

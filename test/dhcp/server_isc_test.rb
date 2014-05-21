@@ -34,6 +34,15 @@ class ServerIscTest < Test::Unit::TestCase
     }
   end
 
+  def setup
+    Proxy::DhcpPlugin.load_test_settings(
+      :enabled => true,
+      :dhcp_vendor => 'isc',
+      :dhcp_config => './test/dhcp/dhcp.conf',
+      :dhcp_leases => './test/dhcp/dhcp.leases',
+      :dhcp_subnets => '192.168.122.0/255')
+  end
+
   def test_sparc_host_creation
     s=Proxy::DHCP::Server.new('192.168.122.1')
     sub=Proxy::DHCP::Subnet.new(s,'192.168.122.0','255.255.255.0')

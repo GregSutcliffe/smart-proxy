@@ -9,16 +9,18 @@ require 'webrick/https'
 require 'daemon' # FIXME: Do we still need this?
 
 require 'proxy/proxy'
-require 'proxy/settings'
+require 'checks'
 require 'proxy/log'
+require 'proxy/settings'
+require 'proxy/settings/plugin'
+require 'proxy/settings/global'
 require 'proxy/util'
 require 'proxy/helpers'
 require 'proxy/plugin'
 require 'proxy/error'
 
 module Proxy
-  SETTINGS_PATH = Pathname.new(__FILE__).join("..","..","config","settings.yml")
-  SETTINGS = Settings.load_from_file
+  SETTINGS = Settings.load_global_settings
 
   VERSION = File.read(File.join(File.dirname(__FILE__), '../VERSION')).chomp
 
@@ -64,6 +66,7 @@ module Proxy
     end
 
     def http_app
+      return nil if SETTINGS.http_port.nil?
       app = Rack::Builder.new do
         ::Proxy::Plugins.registered_plugins.each {|p| instance_eval(p.http_rackup)}
       end
@@ -105,7 +108,7 @@ module Proxy
     end
 
     def self.launch
-      ::Proxy::Plugins.register_loaded_plugins
+      ::Proxy::Plugins.configure_loaded_plugins
 
       launcher = Launcher.new
       

@@ -12,30 +12,30 @@ end
 
 class ::Proxy::Plugins
   @@loaded = [] # {:name, :version, :class}
-  @@registered = {} # plugin_name => instance
+  @@enabled = {} # plugin_name => instance
 
   def self.plugin_loaded(a_name, a_version, a_class)
     @@loaded += [{:name => a_name, :version => a_version, :class => a_class}]
   end
 
-  def self.register_loaded_plugins
-    @@loaded.each { |plugin| eval(plugin[:class]).new.register_plugin }
+  def self.configure_loaded_plugins
+    @@loaded.each { |plugin| eval(plugin[:class]).new.configure_plugin }
   end
 
-  def self.register_plugin(plugin_name, instance)
-    @@registered[plugin_name.to_sym] = instance
+  def self.plugin_enabled(plugin_name, instance)
+    @@enabled[plugin_name.to_sym] = instance
   end
 
-  def self.unregister_plugin(plugin_name)
-    @@registered.delete(plugin_name.to_sym)
+  def self.disable_plugin(plugin_name)
+    @@enabled.delete(plugin_name.to_sym)
   end
 
-  def self.find_registered_plugin(plugin_name)
-    @@registered[plugin_name.to_sym]
+  def self.find_plugin(plugin_name)
+    @@enabled[plugin_name.to_sym]
   end
 
   def self.registered_plugins
-    @@registered.values
+    @@enabled.values
   end
 end
 
@@ -44,26 +44,22 @@ end
 #
 # class ExamplePlugin < ::Proxy::Plugin
 #  plugin :example, "1.2.3"
+#  config_file "example.yml"
 #  http_rackup_path File.expand_path("http_config.ru", File.expand_path("../", __FILE__)) # note no https rackup path, module will not be available over https
 #  requires :foreman_proxy, ">= 1.5.develop"
 #  requires :another_plugin, "~> 1.3.0"
 #  default_settings :first => 'first', :second => 'second'
-#  before_registration { call_this }
-#  after_registration { call_that }
+#  after_activation { call_that }
 # end
 #
 class ::Proxy::Plugin
   include ::Proxy::Log
 
   class << self
-    attr_reader :plugin_name, :version, :before_registration_blk, :after_registration_blk, :get_http_rackup_path, :get_https_rackup_path, :plugin_default_settings
+    attr_reader :plugin_name, :version, :after_activation_blk, :get_http_rackup_path, :get_https_rackup_path, :plugin_default_settings
 
-    def before_registration(&blk)
-      @before_registration_blk = blk
-    end
-
-    def after_registration(&blk)
-      @after_registration_blk = blk
+    def after_activation(&blk)
+      @after_activation_blk = blk
     end
 
     def http_rackup_path(path)
@@ -82,14 +78,30 @@ class ::Proxy::Plugin
       self.dependencies += [::Proxy::Dependency.new(plugin_name, version_spec)]
     end
 
+    # relative to ::Proxy::SETTINGS.settings_directory
+    def settings_file(apath = nil)
+      if apath.nil?
+        @settings_file || "#{plugin_name}.yml"
+      else
+        @settings = nil
+        @settings_file = apath
+      end
+    end
+
     def default_settings(a_hash = {})
+      @settings = nil
       @plugin_default_settings ||= {}
       @plugin_default_settings.merge!(a_hash)
-      @settings = nil # reset memoized value
     end
 
     def settings
-      @settings ||= Settings.load_from_file(:defaults => plugin_default_settings)
+      @settings ||= Proxy::Settings.load_plugin_settings(plugin_default_settings, settings_file)
+    end
+
+    def plugin(plugin_name, aversion)
+      @plugin_name = plugin_name.to_sym
+      @version = aversion
+      ::Proxy::Plugins.plugin_loaded(@plugin_name, @version, self.name)
     end
   end
 
@@ -109,33 +121,40 @@ class ::Proxy::Plugin
     File.read(self.class.get_https_rackup_path) unless self.class.get_https_rackup_path.nil?
   end
 
-  def self.plugin(plugin_name, aversion)
-    @plugin_name = plugin_name.to_sym
-    @version = aversion
-    ::Proxy::Plugins.plugin_loaded(@plugin_name, @version, self.name)
+  def settings
+    self.class.settings
   end
 
-  def register_plugin
-    before_registration
-    ::Proxy::Plugins.register_plugin(plugin_name, self)
-    after_registration
+  def log_used_default_settings
+    unless settings.used_defaults.empty?
+      as_string = settings.defaults.select {|k,v| settings.used_defaults.include?(k)}
+        .sort
+        .collect {|c| ":#{c[0]}: #{c[1]}"}
+        .join(", ")
+      logger.info("'#{plugin_name}' settings were initialized with default values: #{as_string}")
+    end
+  end
+
+  def configure_plugin
+    if settings.enabled
+      log_used_default_settings
+      ::Proxy::Plugins.plugin_enabled(plugin_name, self) 
+      after_activation
+    else
+      logger.info("'#{plugin_name}' module is disabled.")
+    end
   rescue Exception => e
-    logger.error("Couldn't register plugin #{plugin_name}: #{e.message}")
-    ::Proxy::Plugins.unregister_plugin(plugin_name)
+    logger.error("Couldn't enable plugin #{plugin_name}: #{e}:#{e.backtrace.join('/n')}")
+    ::Proxy::Plugins.disable_plugin(plugin_name)
   end
 
-  def before_registration
-    validate_dependencies!(self.class.dependencies)
-    self.class.before_registration_blk.call if self.class.before_registration_blk
-  end
-
-  def after_registration
-    self.class.after_registration_blk.call if self.class.after_registration_blk
+  def after_activation
+    self.class.after_activation_blk.call if self.class.after_activation_blk
   end
 
   def validate_dependencies!(dependencies)
     dependencies.each do |dep|
-      plugin = ::Proxy::Plugins.find_registered_plugin(dep.name)
+      plugin = ::Proxy::Plugins.find_plugin(dep.name)
       raise ::Proxy::PluginNotFound "Plugin '#{dep.name}' required by plugin '#{plugin_name}' could not be found." unless plugin
       unless ::Gem::Dependency.new('', dep.version).match?('', version)
         raise ::Proxy::PluginVersionMismatch "Available version '#{version}' of plugin '#{dep.name}' doesn't match version '#{dep.version}' required by plugin '#{plugin_name}'"

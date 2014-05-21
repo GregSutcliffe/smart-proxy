@@ -14,9 +14,6 @@ class BmcApiTest < Test::Unit::TestCase
   end
 
   def setup
-    # Testing instructions
-    #rake test TEST=test/bmc_api_test.rb
-
     user     ||= ENV["ipmiuser"] || "user"
     pass     ||= ENV["ipmipass"] || "pass"
     @host    ||= ENV["ipmihost"] || "host"

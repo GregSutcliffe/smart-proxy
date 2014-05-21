@@ -1,14 +1,4 @@
 ---
-:tftp: true
-:puppet: true
-:puppetca: true
-:bmc: true
-:dhcp: true
-:dhcp_vendor: 'isc'
-:dhcp_config: './test/dhcp/dhcp.conf'
-:dhcp_leases: './test/dhcp/dhcp.leases'
-:dhcp_subnets: '192.168.122.0/255'
-:puppet_conf: './test/fixtures/puppet.conf'
 :log_file: './logs/test.log'
 :log_level: DEBUG
 

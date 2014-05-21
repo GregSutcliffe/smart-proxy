@@ -1,10 +1,12 @@
 require 'test_helper'
+require 'puppet/puppet_plugin'
 require 'puppet/initializer'
 require 'puppet/class_scanner'
 
 class ClassScannerTest < Test::Unit::TestCase
 
   def setup
+    Proxy::Puppet::Plugin.load_test_settings(:puppet_conf => './test/fixtures/puppet.conf')
     Proxy::Puppet::Initializer.load
     @parser = Puppet::Parser::Parser.new Puppet::Node::Environment.new
   end

@@ -4,14 +4,14 @@ module Proxy::Realm
     helpers ::Proxy::Helpers
 
     def realm_setup
-      raise "Smart Proxy is not configured to support Realm" unless Proxy::Realm::Plugin.settings.realm
+      raise "Smart Proxy is not configured to support Realm" unless Proxy::Realm::Plugin.settings.enabled
 
       case Proxy::Realm::Plugin.settings.realm_provider
         when "freeipa"
           require 'realm/freeipa'
           @realm = Proxy::Realm::FreeIPA.new
         else
-          log_halt 400, "Unrecognized or missing Realm provider: #{Proxy::Realm::Plugin.settings.realm_provider.nil? ? "MISSING" : Proxy::Realm::Plugin.settings.realm_provider}"
+          log_halt 400, "Unrecognized Realm provider: #{Proxy::Realm::Plugin.settings.realm_provider}"
       end
       rescue => e
         log_halt 400, e

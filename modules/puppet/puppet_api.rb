@@ -5,7 +5,7 @@ class Proxy::Puppet::Api < ::Sinatra::Base
   helpers ::Proxy::Helpers
 
   def puppet_setup(opts = {})
-    raise "Smart Proxy is not configured to support Puppet runs" unless Proxy::Puppet::Plugin.settings.puppet
+    raise "Smart Proxy is not configured to support Puppet runs" unless Proxy::Puppet::Plugin.settings.enabled
     case Proxy::Puppet::Plugin.settings.puppet_provider
     when "puppetrun"
       require 'proxy/puppet/puppetrun'

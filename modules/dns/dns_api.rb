@@ -4,7 +4,7 @@ module Proxy::Dns
     helpers ::Proxy::Helpers
 
     def dns_setup(opts)
-      raise "Smart Proxy is not configured to support DNS" unless Proxy::Dns::Plugin.settings.dns
+      raise "Smart Proxy is not configured to support DNS" unless Proxy::Dns::Plugin.settings.enabled
       case Proxy::Dns::Plugin.settings.dns_provider
       when "dnscmd"
         require 'dns/providers/dnscmd'

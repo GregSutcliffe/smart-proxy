@@ -2,10 +2,6 @@ require 'test_helper'
 require 'bmc/ipmi'
 
 class BmcTest < Test::Unit::TestCase
-
-  # Testing instructions
-  #rake test TEST=test/bmc_test.rb
-
   def setup
     @args = { :username => "user", :password => "pass", :bmc_provider => "ipmitool", :host => "host" }
     @bmc  = Proxy::BMC::IPMI.new(@args)
