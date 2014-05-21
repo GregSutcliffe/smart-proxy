@@ -3,6 +3,10 @@ require 'puppet/puppet_plugin'
 require 'puppet/initializer'
 
 class PuppetInitializerTest < Test::Unit::TestCase
+  def setup
+    Proxy::Puppet::Plugin.load_test_settings({})
+  end
+
   def test_config_returns_puppet_conf
     Proxy::Puppet::Plugin.settings.expects(:puppet_conf).returns('/foo/puppet.conf')
     assert_equal '/foo/puppet.conf', Proxy::Puppet::Initializer.config
