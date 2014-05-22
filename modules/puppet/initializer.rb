@@ -15,7 +15,7 @@ module Proxy::Puppet
         end
 
         Puppet[:config] = config
-        raise("Cannot read #{File.absolute_path(config)}") unless File.exist?(config)
+        raise("Cannot read #{File.expand_path(config)}") unless File.exist?(config)
         logger.info "Initializing from Puppet config file: #{config}"
 
         if Puppet::PUPPETVERSION.to_i >= 3
