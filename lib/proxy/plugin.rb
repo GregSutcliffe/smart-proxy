@@ -34,7 +34,7 @@ class ::Proxy::Plugins
     @@enabled[plugin_name.to_sym]
   end
 
-  def self.registered_plugins
+  def self.enabled_plugins
     @@enabled.values
   end
 end
@@ -127,10 +127,10 @@ class ::Proxy::Plugin
 
   def log_used_default_settings
     unless settings.used_defaults.empty?
-      as_string = settings.defaults.select {|k,v| settings.used_defaults.include?(k)}
-        .sort
-        .collect {|c| ":#{c[0]}: #{c[1]}"}
-        .join(", ")
+      as_string = settings.defaults.select {|k,v| settings.used_defaults.include?(k)}.
+        sort.
+        collect {|c| ":#{c[0]}: #{c[1]}"}.
+        join(", ")
       logger.info("'#{plugin_name}' settings were initialized with default values: #{as_string}")
     end
   end

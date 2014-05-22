@@ -125,8 +125,8 @@ module Proxy::PuppetCa
       # Tell puppetca to use the ssl dir that Foreman has been told to use
       @puppetca << " --ssldir #{ssl_dir}"
 
-      if to_bool(SETTINGS.puppetca_use_sudo, true)
-        @sudo = SETTINGS.sudo_command || which("sudo")
+      if to_bool(::Proxy::PuppetCa::Plugin.settings.puppetca_use_sudo, true)
+        @sudo = ::Proxy::PuppetCa::Plugin.settings.sudo_command || which("sudo")
         unless File.exists?(@sudo)
           logger.warn "unable to find sudo binary"
           raise "Unable to find sudo"

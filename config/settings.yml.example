@@ -6,27 +6,35 @@
 #:ssl_certificate: ssl/certs/fqdn.pem
 #:ssl_ca_file: ssl/certs/ca.pem
 #:ssl_private_key: ssl/private_keys/fqdn.key
-# the hosts which the proxy accepts connections from
+
+# Hosts which the proxy accepts connections from
 # commenting the following lines would mean every verified SSL connection allowed
 #:trusted_hosts:
 #- foreman.prod.domain
 #- foreman.dev.domain
+
 #:foreman_url: http://127.0.0.1:3000
 
-# Enable the daemon to run in the background
-#:daemon: false
+# by default smart_proxy runs in the foreground. To enable running as a daemon, uncomment 'daemon' setting
+#:daemon: true
+# Only used when 'daemon' is set to true.
+# Uncomment and modify if you want to change the default pid file '/var/run/foreman-proxy/foreman-proxy.pid'
 #:daemon_pid: /var/run/foreman-proxy/foreman-proxy.pid
 
-# ports used by the proxy
-:http_port: 8000 # disabled by default
+# HTTP ports configuration
+# http is disabled by default. To enable, uncomment 'http_port' setting
+#:http_port: 8000
+# https is enabled if certificate, CA certificate, and private key are present in locations specifed by
+# ssl_certificate, ssl_ca_file, and ssl_private_key correspondingly
+# default values for https_port is 8443
 #:https_port: 8443
 
 # Shared options for virsh DNS/DHCP provider
 :virsh_network: default
 
-# Where our proxy log files are stored
-# filename or STDOUT
+# Log configuration
+# Uncomment and modify if you want to change the location of the log file or use STDOUT
 #:log_file: /var/log/foreman-proxy/proxy.log
-# valid options are
+# Uncomment and modify if you want to change the log level
 # WARN, DEBUG, ERROR, FATAL, INFO, UNKNOWN
 #:log_level: ERROR

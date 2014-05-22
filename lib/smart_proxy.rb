@@ -47,11 +47,6 @@ module Proxy
     {:version => VERSION}
   end
 
-  MODULES = %w{dns dhcp tftp puppetca puppet bmc chefproxy realm}
-  def self.features
-    MODULES.collect{|mod| mod if SETTINGS.send mod}.compact
-  end
-
   class Launcher
     include ::Proxy::Log
 
@@ -65,10 +60,14 @@ module Proxy
       end
     end
 
+    def https_enabled?
+      SETTINGS.ssl_private_key and SETTINGS.ssl_certificate and SETTINGS.ssl_ca_file
+    end
+
     def http_app
       return nil if SETTINGS.http_port.nil?
       app = Rack::Builder.new do
-        ::Proxy::Plugins.registered_plugins.each {|p| instance_eval(p.http_rackup)}
+        ::Proxy::Plugins.enabled_plugins.each {|p| instance_eval(p.http_rackup)}
       end
 
       Rack::Server.new(
@@ -76,16 +75,17 @@ module Proxy
         :server => :webrick,
         :Port => SETTINGS.http_port,
         :daemonize => false,
-        :pid => SETTINGS.daemon ? pid_path : nil)
+        :pid => SETTINGS.daemon && !https_enabled? ? pid_path : nil)
     end
 
     def https_app
-      unless SETTINGS.ssl_private_key and SETTINGS.ssl_certificate and SETTINGS.ssl_ca_file
-        logger.info "Missing SSL setup, will not be listening on https port"
+      unless https_enabled?
+        logger.warn "Missing SSL setup, https is disabled."
+        nil
       else
         begin
           app = Rack::Builder.new do
-            ::Proxy::Plugins.registered_plugins.each {|p| instance_eval(p.https_rackup)}
+            ::Proxy::Plugins.enabled_plugins.each {|p| instance_eval(p.https_rackup)}
           end
 
           Rack::Server.new(
@@ -98,7 +98,7 @@ module Proxy
             :SSLCertificate => OpenSSL::X509::Certificate.new(File.read(SETTINGS.ssl_certificate)),
             :SSLCACertificateFile => SETTINGS.ssl_ca_file,
             :daemonize => false,
-            :pid => nil)
+            :pid => SETTINGS.daemon ? pid_path : nil)
         rescue => e
           logger.error "Unable to access the SSL keys. Are the values correct in settings.yml and do permissions allow reading?: #{e}"
           nil
@@ -111,22 +111,27 @@ module Proxy
       ::Proxy::Plugins.configure_loaded_plugins
 
       launcher = Launcher.new
-      
+
       launcher.create_pid_dir
       http_app = launcher.http_app
       https_app = launcher.https_app
 
-      t1 = Thread.new { http_app.start } unless http_app.nil?
-      t2 = Thread.new { https_app.start }
-
-      trap(:INT) do
-        https_app.shutdown
-        http_app.shutdown unless http_app.nil?
+      if http_app.nil? && https_app.nil?
+        logger.error("Both http and https are disabled, unable to start.")
+        exit(1)
       end
 
-      t2.join
-
       Process.daemon if SETTINGS.daemon
+
+      t1 = Thread.new { https_app.start } unless https_app.nil?
+      t2 = Thread.new { http_app.start } unless http_app.nil?
+
+      trap(:INT) do
+        http_app.shutdown unless http_app.nil?
+        https_app.shutdown unless https_app.nil?
+      end
+
+      (t1 || t2).join
     end
   end
 end
