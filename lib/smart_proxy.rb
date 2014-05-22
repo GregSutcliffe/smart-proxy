@@ -126,13 +126,12 @@ module Proxy
       t1 = Thread.new { https_app.start } unless https_app.nil?
       t2 = Thread.new { http_app.start } unless http_app.nil?
 
+      sleep 5 # Rack installs its own trap; Sleeping for 5 secs insures we overwrite it with our own
       trap(:INT) do
-        http_app.shutdown unless http_app.nil?
-        https_app.shutdown unless https_app.nil?
+        exit(0)
       end
 
       (t1 || t2).join
-      exit(0)
     end
   end
 end
