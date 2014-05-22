@@ -75,7 +75,7 @@ module Proxy
         :server => :webrick,
         :Port => SETTINGS.http_port,
         :daemonize => false,
-        :pid => SETTINGS.daemon && !https_enabled? ? pid_path : nil)
+        :pid => (SETTINGS.daemon && !https_enabled?) ? pid_path : nil)
     end
 
     def https_app
@@ -132,6 +132,7 @@ module Proxy
       end
 
       (t1 || t2).join
+      exit(0)
     end
   end
 end
