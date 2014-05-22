@@ -2,11 +2,19 @@
 
 $LOAD_PATH.unshift *Dir[File.expand_path("../../lib", __FILE__), File.expand_path("../../modules", __FILE__)]
 
-require 'bundler'
+if File.exist?(File.expand_path('../../Gemfile.in', __FILE__))
+  # If there is a Gemfile.in file, we will not use Bundler but BundlerExt
+  # gem which parses this file and loads all dependencies from the system
+  # rathern then trying to download them from rubygems.org. It always
+  # loads all gemfile groups.
+  require 'bundler_ext'
+  BundlerExt.system_require(File.expand_path('../../Gemfile.in', __FILE__), :all)
+else
+  require 'bundler'
+  Bundler.require
+end
+
 require 'json'
 require 'smart_proxy'
 
-Bundler.require
-
 Proxy::Launcher.launch
-
