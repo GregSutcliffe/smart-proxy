@@ -13,11 +13,11 @@ module Proxy::Realm
 
     def initialize
       errors = []
-      errors << "keytab not configured"                      unless SETTINGS.realm_keytab
-      errors << "keytab not found: #{SETTINGS.realm_keytab}" unless SETTINGS.realm_keytab && File.exist?(SETTINGS.realm_keytab)
-      errors << "principal not configured"                   unless SETTINGS.realm_principal
+      errors << "keytab not configured"                      unless Proxy::Realm::Plugin.settings.realm_keytab
+      errors << "keytab not found: #{Proxy::Realm::Plugin.settings.realm_keytab}" unless Proxy::Realm::Plugin.settings.realm_keytab && File.exist?(Proxy::Realm::Plugin.settings.realm_keytab)
+      errors << "principal not configured"                   unless Proxy::Realm::Plugin.settings.realm_principal
 
-      logger.info "freeipa: realm keytab is '#{SETTINGS.realm_keytab}' and using principal '#{SETTINGS.realm_principal}'"
+      logger.info "freeipa: realm keytab is '#{Proxy::Realm::Plugin.settings.realm_keytab}' and using principal '#{Proxy::Realm::Plugin.settings.realm_principal}'"
 
       # Get FreeIPA Configuration
       if File.exist?(IPA_CONFIG)
@@ -38,7 +38,7 @@ module Proxy::Realm
 
       if errors.empty?
         # Get krb5 token
-        init_krb5_ccache SETTINGS.realm_keytab, SETTINGS.realm_principal
+        init_krb5_ccache Proxy::Realm::Plugin.settings.realm_keytab, Proxy::Realm::Plugin.settings.realm_principal
         gssapi = GSSAPI::Simple.new(@ipa_server.host, "HTTP")
         token = gssapi.init_context
 
@@ -114,9 +114,9 @@ module Proxy::Realm
       check_realm realm
       raise Proxy::Realm::NotFound, "Host #{hostname} not found in realm!" unless find hostname
       begin
-        result = @ipa.call("host_del", [hostname], {"updatedns" => SETTINGS.freeipa_remove_dns})
+        result = @ipa.call("host_del", [hostname], {"updatedns" => Proxy::Realm::Plugin.settings.freeipa_remove_dns})
       rescue => e
-        if SETTINGS.freeipa_remove_dns
+        if Proxy::Realm::Plugin.settings.freeipa_remove_dns
           # If the host doesn't have a DNS record (e.g. deleting a system in Foreman before it's built)
           # the above call will fail.  Try again with updatedns => false
           result = @ipa.call("host_del", [hostname], {"updatedns" => false})
