@@ -1,7 +1,6 @@
 require 'puppet/environment'
 
 class Proxy::Puppet::Api < ::Sinatra::Base
-  include ::Proxy::Log
   helpers ::Proxy::Helpers
 
   def puppet_setup(opts = {})

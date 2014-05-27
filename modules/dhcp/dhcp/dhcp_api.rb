@@ -1,5 +1,4 @@
 class Proxy::DhcpApi < ::Sinatra::Base
-  include ::Proxy::Log
   helpers ::Proxy::Helpers
   use Rack::MethodOverride
 

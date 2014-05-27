@@ -1,6 +1,5 @@
 module Proxy::Realm
   class Api < Sinatra::Base
-    include ::Proxy::Log
     helpers ::Proxy::Helpers
 
     def realm_setup

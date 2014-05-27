@@ -3,7 +3,6 @@ require 'chef/authentication'
 
 module Proxy::Chef
   class Api < ::Sinatra::Base
-    include ::Proxy::Log
     helpers ::Proxy::Helpers
 
     error Proxy::Error::BadRequest do

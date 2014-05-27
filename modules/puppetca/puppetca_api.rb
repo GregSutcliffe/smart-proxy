@@ -1,6 +1,5 @@
 module Proxy::PuppetCa
   class Api < ::Sinatra::Base
-    include ::Proxy::Log
     helpers ::Proxy::Helpers
 
     get "/" do

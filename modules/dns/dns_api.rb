@@ -1,6 +1,5 @@
 module Proxy::Dns
   class Api < ::Sinatra::Base
-    include ::Proxy::Log
     helpers ::Proxy::Helpers
 
     def dns_setup(opts)

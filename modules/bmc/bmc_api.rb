@@ -1,6 +1,5 @@
 module Proxy::BMC
   class Api < ::Sinatra::Base
-    include ::Proxy::Log
     helpers ::Proxy::Helpers
 
     # All GET requests will only read ipmi data, no changes

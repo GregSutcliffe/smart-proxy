@@ -28,9 +28,10 @@ module Proxy
   ::Sinatra::Base.set :root, APP_ROOT
   ::Sinatra::Base.set :views, APP_ROOT + '/views'
   ::Sinatra::Base.set :public_folder, APP_ROOT + '/public'
-  ::Sinatra::Base.set :logging, true
+  ::Sinatra::Base.set :logging, false
   ::Sinatra::Base.set :env, :production
-#  ::Sinatra::Base.use ::Rack::CommonLogger, logger
+  ::Sinatra::Base.use ::Proxy::LoggerMiddleware
+#  ::Sinatra::Base.use ::Rack::CommonLogger, Proxy::Log::SingletonLogger.instance
 
   require 'root/root'
   require 'facts/facts'
