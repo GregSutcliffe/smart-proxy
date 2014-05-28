@@ -21,7 +21,6 @@ require 'proxy/error'
 
 module Proxy
   SETTINGS = Settings.load_global_settings
-
   VERSION = File.read(File.join(File.dirname(__FILE__), '../VERSION')).chomp
 
   ::Sinatra::Base.set :run, false

@@ -21,6 +21,7 @@ require "mocha/setup"
 require "rack/test"
 
 Proxy::SETTINGS = Proxy::Settings.load_global_settings(File.expand_path("fixtures/test_settings.yml", File.dirname(__FILE__)))
+Proxy::VERSION = File.read(File.join(File.dirname(__FILE__), '../VERSION')).chomp
 
 class ::Proxy::Plugin
   def self.load_test_settings(a_hash)
