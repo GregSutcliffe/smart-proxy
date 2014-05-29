@@ -148,7 +148,7 @@ class ::Proxy::Plugin
     if settings.enabled
       log_used_default_settings
       ::Proxy::Plugins.plugin_enabled(plugin_name, self) 
-      ::Proxy::BundlerHelper.require_group(:default, bundler_group)
+      ::Proxy::BundlerHelper.require_groups(:default, bundler_group)
       after_activation
     else
       logger.info("'#{plugin_name}' module is disabled.")
