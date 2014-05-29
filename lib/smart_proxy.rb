@@ -4,7 +4,8 @@ require 'proxy'
 require 'bundler_helper'
 Proxy::BundlerHelper.require_group(:default)
 
-require 'sinatra-patch' #check sinatra version
+require 'rack-patch' if Rack.release < "1.3"
+require 'sinatra-patch'
 require 'fileutils'
 require 'pathname'
 require 'checks'
@@ -107,7 +108,6 @@ module Proxy
           nil
         end
       end
-
     end
 
     def self.launch
