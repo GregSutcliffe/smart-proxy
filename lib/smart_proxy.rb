@@ -1,14 +1,16 @@
 APP_ROOT = "#{File.dirname(__FILE__)}/.."
 
-require 'sinatra'
-require 'sinatra-patch'
+require 'proxy'
+require 'bundler_helper'
+Proxy::BundlerHelper.require_group(:default)
+
+require 'sinatra-patch' #check sinatra version
 require 'fileutils'
 require 'pathname'
 require 'checks'
 require 'webrick/https'
 require 'daemon' # FIXME: Do we still need this?
 
-require 'proxy/proxy'
 require 'checks'
 require 'proxy/log'
 require 'proxy/settings'
@@ -18,6 +20,7 @@ require 'proxy/util'
 require 'proxy/helpers'
 require 'proxy/plugin'
 require 'proxy/error'
+
 
 module Proxy
   SETTINGS = Settings.load_global_settings

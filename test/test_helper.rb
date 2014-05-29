@@ -5,7 +5,7 @@ $: << File.join(File.dirname(__FILE__), '..', 'modules')
 logdir = File.join(File.dirname(__FILE__), '..', 'logs')
 FileUtils.mkdir_p(logdir) unless File.exists?(logdir)
 
-require 'proxy/proxy'
+require 'proxy'
 require 'checks'
 require 'proxy/log'
 require 'proxy/settings'

@@ -40,7 +40,7 @@ class ::Proxy::Plugins
 end
 
 #
-# example of plugin DSL
+# example of plugin API
 #
 # class ExamplePlugin < ::Proxy::Plugin
 #  plugin :example, "1.2.3"
@@ -50,13 +50,14 @@ end
 #  requires :another_plugin, "~> 1.3.0"
 #  default_settings :first => 'first', :second => 'second'
 #  after_activation { call_that }
+#  bundler_group :blah
 # end
 #
 class ::Proxy::Plugin
   include ::Proxy::Log
 
   class << self
-    attr_reader :plugin_name, :version, :after_activation_blk, :get_http_rackup_path, :get_https_rackup_path, :plugin_default_settings
+    attr_reader :plugin_name, :version, :after_activation_blk, :get_http_rackup_path, :get_https_rackup_path, :plugin_default_settings, :bundler_group_name
 
     def after_activation(&blk)
       @after_activation_blk = blk
@@ -76,6 +77,10 @@ class ::Proxy::Plugin
 
     def requires(plugin_name, version_spec)
       self.dependencies += [::Proxy::Dependency.new(plugin_name, version_spec)]
+    end
+
+    def bundler_group(name)
+      @bundler_group_name = name
     end
 
     # relative to ::Proxy::SETTINGS.settings_directory
@@ -113,6 +118,10 @@ class ::Proxy::Plugin
     self.class.version
   end
 
+  def bundler_group
+    self.class.bundler_group_name || self.plugin_name
+  end
+
   def http_rackup
     File.read(self.class.get_http_rackup_path) unless self.class.get_http_rackup_path.nil?
   end
@@ -139,6 +148,7 @@ class ::Proxy::Plugin
     if settings.enabled
       log_used_default_settings
       ::Proxy::Plugins.plugin_enabled(plugin_name, self) 
+      ::Proxy::BundlerHelper.require_group(:default, bundler_group)
       after_activation
     else
       logger.info("'#{plugin_name}' module is disabled.")

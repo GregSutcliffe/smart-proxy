@@ -1,8 +1,10 @@
 ---
 :enabled: false 
-# valid providers:
+# Valid providers:
 #   nsupdate
 #   nsupdate_gss (for GSS-TSIG support)
+#   virsh
+#   dnscmd
 #:dns_provider: nsupdate
 #:dns_key: /etc/rndc.key
 # use this setting if you are managing a dns server which is not localhost though this proxy
