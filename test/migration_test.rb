@@ -93,7 +93,7 @@ class ProxyMigrationTest < Test::Unit::TestCase
     config.delete(:ssl_certificate)
     output, unknown = migrate(config)
     assert_equal 8443, output[:settings][:http_port]
-    refute output[:settings][:https_port]
+    assert_equal nil, output[:settings][:https_port]
   end
 
 end
